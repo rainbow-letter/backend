@@ -20,45 +20,67 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - uses: actions/checkout@v3
-      - name: make application.yml
-        run: |
-          # mkdir src/main/resources
-          mkdir -p ./src/main/resources
-          
-          # create application.yml
-          cd ./src/main/resources
-          
-          # application.yml 파일 생성
-          touch ./application.yml
-          
-          # GitHub-Actions 에서 설정한 값을 application.yml 파일에 쓰기
-          echo "${{ secrets.APPLICATION }}" >> ./application.yml
 
+      - name: Make application.yml
+        run: |
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources
+          touch ./application.yml
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "${{ secrets.APPLICATION_PROD }}" >> ./application.yml
+          else
+            echo "${{ secrets.APPLICATION_DEV }}" >> ./application.yml
+          fi
         shell: bash
 
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew bootJar
-      - name: web docker build and push
+
+      - name: Docker Build & Push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/rb_backend .
-          docker push ${{ secrets.DOCKER_REPO }}/rb_backend
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            IMAGE_TAG="${{ secrets.DOCKER_IMAGE_TAG_PROD }}"
+          else
+            IMAGE_TAG="${{ secrets.DOCKER_IMAGE_TAG_DEV }}"
+          fi
+          docker build -t ${{ secrets.DOCKER_REPO }}/$IMAGE_TAG .
+          docker push ${{ secrets.DOCKER_REPO }}/$IMAGE_TAG
+
   deploy:
-    needs:
-      - build
+    needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [ dev, prod ]
     steps:
       - name: deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ matrix.environment == 'prod' && secrets.HOST_PROD || secrets.HOST_DEV }}
           username: ubuntu
-          key: ${{ secrets.KEY }}
+          key: ${{ matrix.environment == 'prod' && secrets.KEY_PROD || secrets.KEY_DEV }}
           port: 22
           script: |
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/rb_backend
-            sudo docker compose -f docker-compose-app.yml down
-            sudo docker compose -f docker-compose-app.yml up -d
+            if [ "${{ matrix.environment }}" == "prod" ]; then
+              IMAGE_TAG="prod_backend"
+            else
+              IMAGE_TAG="dev_backend"
+            fi
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/$IMAGE_TAG
+            sudo docker compose down
+            sudo docker compose up -d
+        if: |
+          (matrix.environment == 'prod' && github.ref == 'refs/heads/main') ||
+          (matrix.environment == 'dev' && github.ref != 'refs/heads/main')
+
+#          host: ${{ secrets.HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.KEY }}
+#          port: 22
+#          script: |
+#            sudo docker pull ${{ secrets.DOCKER_REPO }}/rb_backend
+#            sudo docker compose -f docker-compose-app.yml down
+#            sudo docker compose -f docker-compose-app.yml up -d
