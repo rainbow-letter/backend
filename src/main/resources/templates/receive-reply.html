@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title></title>
+</head>
+<body>
+<div
+    style="font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; margin: 100px auto; padding: 30px 0; box-sizing: border-box;">
+  <img alt="logo"
+       src="cid:logo"
+       width="200"/>
+  <div style="width: 100%; border-top: 4px solid #FFC169; padding-top: 30px"></div>
+  <h1 style="margin: 0; padding: 0 5px; font-size: 28px;">
+    <span style="color: #FFC169;"
+          th:text="#{receive.reply.template.title}">무지개 마을 로 부터 답장이 도착했어요!</span>
+  </h1>
+  <p style="font-size: 16px; line-height: 26px; margin-top: 50px; padding: 0 5px;"
+     th:text="#{receive.reply.template.content}">
+    지금 바로 편지를 보러 갈까요? '답장 보러가기' 버튼을 클릭해주세요!
+  </p>
+  <br/>
+  <div style="text-align: center">
+    <a style="color: #FFF; text-decoration: none; text-align: center;" target="_blank"
+       th:href="@{${url}}">
+      <p style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background: #FFC169; line-height: 45px; vertical-align: middle; font-size: 16px;"
+         th:text="#{receive.reply.template.content.button}">
+        답장 보러가기
+      </p>
+    </a>
+  </div>
+  <div style="text-align: center">
+    <p style="font-size: 16px; line-height: 26px; margin-top: 50px; padding: 0 5px;"
+       th:text="#{receive.reply.template.survey}">
+      무지개편지, 잘 이용하고 계신가요?<br/>
+      서비스 만족도 평가를 남겨주시면 더욱 나아지는 모습을 보일게요.
+    </p>
+  </div>
+  <div style="text-align: center">
+    <a style="color: #FFF; text-decoration: none; text-align: center;"
+       target="_blank"
+       th:href="@{${surveyUrl}}">
+      <p style="display: inline-block; width: 210px; height: 45px; margin: 15px 5px 40px; background: #FFC169; line-height: 45px; vertical-align: middle; font-size: 16px;"
+         th:text="#{receive.reply.template.survey.button}">
+        만족도 조사 바로가기
+      </p>
+    </a>
+  </div>
+</div>
+</body>
+</html>

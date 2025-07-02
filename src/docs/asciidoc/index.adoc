@@ -1,0 +1,41 @@
+= 무지개 편지 API 명세서
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== 에러
+
+[source,json,options="nowrap"]
+----
+{
+  "message": "string",
+  "status": "number",
+  "timestamp": "string"
+}
+----
+
+|===
+|필드명|설명
+
+|`+message+`
+|에러 메시지
+
+|`+status+`
+|상태 코드
+
+|`+timestamp+`
+|에러 발생 시간
+
+|===
+
+include::user.adoc[]
+include::faq.adoc[]
+include::image.adoc[]
+include::pet.adoc[]
+include::ai.adoc[]
+include::letter.adoc[]
+include::reply.adoc[]
+include::temporary.adoc[]
+include::data.adoc[]

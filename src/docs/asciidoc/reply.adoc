@@ -1,0 +1,21 @@
+== 답장
+
+=== 읽음 처리
+
+operation::reply-e2e-test/should_-read-reply_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== [관리자] 재생성
+
+operation::reply-e2e-test/should_-generate-reply_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== [관리자] 검수
+
+operation::reply-e2e-test/should_-inspect-reply_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== [관리자] 발송
+
+operation::reply-e2e-test/should_-submit-reply_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== [관리자] 수정
+
+operation::reply-e2e-test/should_-update-reply_-when_-admin[snippets='http-request,path-parameters,request-headers,request-fields,http-response']

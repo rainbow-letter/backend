@@ -1,0 +1,33 @@
+== 이미지
+
+=== 조회
+
+[source,http,options="nowrap"]
+----
+GET /api/images/resources/{objectKey} HTTP/1.1
+----
+
+[TIP]
+.예제
+====
+[source,html]
+----
+<img src="http://localhost/api/resources/202406/abc.png" alt="image"/>
+----
+====
+
+=== 등록
+
+==== HTTP request
+
+[source,http,options="nowrap"]
+----
+POST /api/images HTTP/1.1
+Authorization: Bearer ACCESS_TOKEN
+----
+
+operation::image-e2e-test/should_-upload-image_-when_-valid-request[snippets='request-headers,request-parts,http-response,response-fields']
+
+=== 삭제
+
+operation::image-e2e-test/should_-delete-image_-when_-authenticated[snippets='http-request,path-parameters,request-headers,http-response']

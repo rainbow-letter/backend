@@ -1,0 +1,29 @@
+== 편지
+
+=== 생성
+
+operation::letter-e2e-test/should_-create-letter_-when_-valid-request[snippets='http-request,query-parameters,request-headers,request-fields,http-response,response-headers']
+
+=== 삭제
+
+operation::letter-e2e-test/should_-delete-letter_-when_-valid-request[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== 편지함 조회
+
+operation::letter-e2e-test/should_-letter-box-responses_-when_-valid-request[snippets='http-request,query-parameters,request-headers,http-response,response-fields']
+
+=== 단건 조회
+
+operation::letter-e2e-test/should_-letter-response_-when_-valid-request[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
+
+=== 공유 편지 조회
+
+operation::letter-e2e-test/should_-letter-share-response_-when_-valid-request[snippets='http-request,path-parameters,http-response,response-fields']
+
+=== [관리자] 페이지 조회
+
+operation::letter-e2e-test/should_-letter-admin-page-response_-when_-admin[snippets='http-request,query-parameters,request-headers,http-response,response-fields']
+
+=== [관리자] 상세 조회
+
+operation::letter-e2e-test/should_-letter-admin-detail-response_-when_-admin[snippets='http-request,path-parameters,query-parameters,request-headers,http-response,response-fields']

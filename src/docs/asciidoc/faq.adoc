@@ -1,0 +1,29 @@
+== FAQ
+
+=== 목록 조회
+
+operation::faq-e2e-test/should_-faq-user-responses_-when_-un-authenticated[snippets='http-request,http-response,response-fields']
+
+=== [관리자] 목록 조회
+
+operation::faq-e2e-test/should_-faq-admin-responses_-when_-admin[snippets='http-request,request-headers,http-response,response-fields']
+
+=== [관리자] 생성
+
+operation::faq-e2e-test/should_-create-faq_-when_-admin[snippets='http-request,request-headers,request-fields,http-response,response-headers']
+
+=== [관리자] 수정
+
+operation::faq-e2e-test/should_-update-faq_-when_-admin[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
+
+=== [관리자] 보이기 여부 변경
+
+operation::faq-e2e-test/should_-change-visibility-faq_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== [관리자] 순번 변경
+
+operation::faq-e2e-test/should_-switch-sequence-faq_-when_-admin[snippets='http-request,request-headers,request-fields,http-response']
+
+=== [관리자] 삭제
+
+operation::faq-e2e-test/should_-delete-faq_-when_-admin[snippets='http-request,path-parameters,request-headers,http-response']

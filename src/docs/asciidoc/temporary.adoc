@@ -1,0 +1,25 @@
+== 편지 임시 저장
+
+=== 존재 여부 조회
+
+operation::temporary-e2e-test/should_-temporary-exists-response_-when_-exists[snippets='http-request,query-parameters,request-headers,http-response,response-fields']
+
+=== 조회
+
+operation::temporary-e2e-test/should_-temporary-response_-when_-find-by-pet-id[snippets='http-request,query-parameters,request-headers,http-response,response-fields']
+
+=== 생성
+
+operation::temporary-e2e-test/should_-create_-when_-valid-request[snippets='http-request,request-headers,request-fields,http-response,response-fields']
+
+=== 수정
+
+operation::temporary-e2e-test/should_-update_-when_-valid-request[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
+
+=== 세션 변경
+
+operation::temporary-e2e-test/should_-temporary-session-response_-when_-change-session[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
+
+=== 삭제
+
+operation::temporary-e2e-test/should_-delete-temporary_-when_-valid-request[snippets='http-request,path-parameters,query-parameters,request-headers,http-response']

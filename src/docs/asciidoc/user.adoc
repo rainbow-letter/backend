@@ -1,0 +1,78 @@
+== 유저
+
+=== 정보 조회
+
+operation::user-e2e-test/should_-user-information-response_-when_-authenticated[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 토큰 검증
+
+operation::user-e2e-test/should_-user-verify-response_-when_-authenticated[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 생성
+
+operation::user-e2e-test/should_-create-user_-when_-valid-request[snippets='http-request,request-fields,http-response,response-headers']
+
+=== 로그인
+
+operation::user-e2e-test/should_-login-user_-when_-valid-request[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 소셜 로그인
+
+[TIP]
+.구글
+====
+아래 URL로 접속하면 구글 로그인이 진행됩니다. +
+SERVER_URL/api/oauth2/authorization/google
+====
+
+[TIP]
+.네이버
+====
+아래 URL로 접속하면 네이버 로그인이 진행됩니다. +
+SERVER_URL/api/oauth2/authorization/naver
+====
+
+[TIP]
+.카카오
+====
+아래 URL로 접속하면 카카오 로그인이 진행됩니다. +
+SERVER_URL/api/oauth2/authorization/kakao
+====
+
+[NOTE]
+.로그인 성공
+====
+성공적으로 소셜 로그인이 완료되면 아래 URL로 리다이렉트 됩니다. +
+CLIENT_URL/oauth/success?token=ACCESS_TOKEN
+====
+
+=== 비밀번호 찾기
+
+operation::user-e2e-test/should_-find-password-user_-when_-valid-request[snippets='http-request,request-fields,http-response']
+
+[IMPORTANT]
+====
+사용자의 이메일로 비밀번호 찾기 이메일이 발송됩니다. +
+발송된 이메일을 통해 사용자는 아래 URL에 접속하여 비밀번호 초기화를 진행합니다. +
+CLIENT_URL/userJpaEntities/password/reset?token=ACCESS_TOKEN
+====
+
+=== 비밀번호 초기화
+
+operation::user-e2e-test/should_-reset-password-user_-when_-valid-request[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 비밀번호 변경
+
+operation::user-e2e-test/should_-change-password-user_-when_-valid-request[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 휴대폰 번호 변경
+
+operation::user-e2e-test/should_-change-user-phone-number_-when_-valid-request[snippets='http-request,request-headers,request-fields,http-response']
+
+=== 휴대폰 번호 삭제
+
+operation::user-e2e-test/should_-delete-user-phone-number_-when_-authenticated[snippets='http-request,request-headers,http-response']
+
+=== 탈퇴
+
+operation::user-e2e-test/should_-leave-user_-when_-authenticated[snippets='http-request,request-headers,http-response']

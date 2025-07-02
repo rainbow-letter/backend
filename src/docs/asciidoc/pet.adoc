@@ -1,0 +1,29 @@
+== 반려동물
+
+=== 대시보드
+
+operation::pet-e2e-test/should_-pet-dashboard-responses_-when_-authenticated[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 목록 조회
+
+operation::pet-e2e-test/should_-pet-responses_-when_-authenticated[snippets='http-request,request-headers,http-response,response-fields']
+
+=== 단건 조회
+
+operation::pet-e2e-test/should_-pet-response_-when_-authenticated[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
+
+=== 생성
+
+operation::pet-e2e-test/should_-create-pet_-when_-valid-request[snippets='http-request,request-headers,request-fields,http-response,response-headers']
+
+=== 좋아요 증가
+
+operation::pet-e2e-test/should_-pet-increase-favorite_-when_-valid-request[snippets='http-request,path-parameters,request-headers,http-response']
+
+=== 수정
+
+operation::pet-e2e-test/should_-update-pet_-when_-valid-request[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
+
+=== 삭제
+
+operation::pet-e2e-test/should_-delete-pet_-when_-valid-request[snippets='http-request,path-parameters,request-headers,http-response']
