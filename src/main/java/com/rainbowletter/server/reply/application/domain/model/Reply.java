@@ -109,6 +109,12 @@ public class Reply extends AggregateRoot {
         this.promptType = promptType;
         this.summary = summary;
         this.content = content;
+
+        if (promptType == PromptType.A) {
+            this.promptA = content;
+        } else if (promptType == PromptType.B) {
+            this.promptB = content;
+        }
     }
 
     public void inspect(final LocalDateTime inspectionTime) {
