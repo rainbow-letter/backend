@@ -3,8 +3,8 @@ package com.rainbowletter.server.reply.adapter.in.web;
 import com.rainbowletter.server.common.annotation.WebAdapter;
 import com.rainbowletter.server.reply.adapter.in.web.dto.ReplyUpdateRequest;
 import com.rainbowletter.server.reply.application.domain.model.Reply.ReplyId;
-import com.rainbowletter.server.reply.application.port.in.UpdateReplyContentCommand;
-import com.rainbowletter.server.reply.application.port.in.UpdateReplyContentUseCase;
+import com.rainbowletter.server.reply.application.port.in.UpdateReplyCommand;
+import com.rainbowletter.server.reply.application.port.in.UpdateReplyUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,22 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admins/replies")
 @Tag(name = "reply")
-class UpdateReplyContentController {
+class UpdateReplyController {
 
-    private final UpdateReplyContentUseCase updateReplyContentUseCase;
+    private final UpdateReplyUseCase updateReplyUseCase;
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(
         @PathVariable("id") final Long id,
         @RequestBody final ReplyUpdateRequest request
     ) {
-        final var command = new UpdateReplyContentCommand(
+        final var command = new UpdateReplyCommand(
             new ReplyId(id),
             request.promptType(),
             request.summary(),
             request.content()
         );
-        updateReplyContentUseCase.updateReplyContent(command);
+        updateReplyUseCase.updateReply(command);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

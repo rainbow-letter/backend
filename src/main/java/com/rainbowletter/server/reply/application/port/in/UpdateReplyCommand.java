@@ -11,7 +11,7 @@ import lombok.Value;
 
 @Value
 @SuppressWarnings("ClassCanBeRecord")
-public class UpdateReplyContentCommand {
+public class UpdateReplyCommand {
 
     ReplyId replyId;
 
@@ -24,7 +24,7 @@ public class UpdateReplyContentCommand {
     @LetterContent
     String content;
 
-    public UpdateReplyContentCommand(
+    public UpdateReplyCommand(
         final ReplyId replyId,
         final PromptType promptType,
         final String summary,
