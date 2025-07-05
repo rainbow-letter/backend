@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admins/replies")
 @Tag(name = "reply")
-class UpdateReplyController {
+class UpdateReplyContentController {
 
     private final UpdateReplyUseCase updateReplyUseCase;
 
