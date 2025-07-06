@@ -68,7 +68,7 @@ jobs:
               IMAGE_TAG="${{ secrets.DOCKER_IMAGE_TAG_PROD }}"
               COMPOSE_CMD="sudo docker compose"
             else
-              IMAGE_TAG="dev_backend"
+              IMAGE_TAG="${{ secrets.DOCKER_IMAGE_TAG_DEV }}"
               COMPOSE_CMD="sudo docker compose -f docker-compose-app.yml"
             fi
             
