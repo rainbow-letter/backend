@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@FeignClient(name = "slackClient", url = "${slack.webhook.url.dev}")
+@FeignClient(name = "slackClient", url = "${slack.webhook.url.review}")
 public interface SlackReviewClient {
 
     @PostMapping
