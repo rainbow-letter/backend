@@ -41,7 +41,7 @@ test/resources/
 seed/
 logback.xml
 application.properties
-#*.properties
+*.properties
 src/main/resources/static/docs/
 logs/
 compression-logs/
