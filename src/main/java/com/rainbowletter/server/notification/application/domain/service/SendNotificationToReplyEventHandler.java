@@ -98,7 +98,7 @@ class SendNotificationToReplyEventHandler {
                 List.of(
                         petName,
                         pet.getOwner(),
-                        letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd일")),
+                        letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                         petName
                 )
         );
@@ -109,7 +109,7 @@ class SendNotificationToReplyEventHandler {
 
         final var failContentQuery = new GetAlimTalkTemplateQuery(
                 AlimTalkTemplateCode.REPLY,
-                List.of(letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd일")), petName)
+                List.of(letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), petName)
         );
         final String failContent = getAlimTalkTemplateUseCase.failContent(failContentQuery);
 
