@@ -49,7 +49,7 @@ public interface LoadLetterPort {
         Pageable pageable
     );
 
-    List<RecentLetterSummary> loadRecentLettersByPetId(PetId petId, Long letterId);
+    List<RecentLetterSummary> loadRecentLettersByPetId(PetId petId, Long letterId, LocalDateTime currentCreatedAt);
 
     LetterStats getLetterReportByCreatedAtBetween(LocalDateTime letterStartTime, LocalDateTime letterEndTime);
 
