@@ -329,7 +329,12 @@ class ReadLetterPersistenceAdapter implements LoadLetterPort, CountLetterPort {
 //    }
 
     @Override
-    public List<RecentLetterSummary> loadRecentLettersByPetId(final PetId petId, final Long currentLetterId) {
+    public List<RecentLetterSummary> loadRecentLettersByPetId(final PetId petId,
+                                                              final Long currentLetterId,
+                                                              final LocalDateTime currentCreatedAt
+    ) {
+        final LocalDateTime startDate = currentCreatedAt.toLocalDate().minusDays(5).atStartOfDay();
+
         return queryFactory
             .select(Projections.constructor(
                 RecentLetterSummary.class,
@@ -339,7 +344,8 @@ class ReadLetterPersistenceAdapter implements LoadLetterPort, CountLetterPort {
             .from(letterJpaEntity)
             .where(
                 letterJpaEntity.petId.eq(petId.value()),
-                letterJpaEntity.id.ne(currentLetterId)
+                letterJpaEntity.id.ne(currentLetterId),
+                letterJpaEntity.createdAt.goe(startDate)
             )
             .orderBy(letterJpaEntity.createdAt.desc())
             .limit(3)

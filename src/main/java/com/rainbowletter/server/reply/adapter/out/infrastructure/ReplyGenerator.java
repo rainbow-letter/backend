@@ -93,7 +93,13 @@ class ReplyGenerator implements GenerateReplyPort {
             command.getIsFirstLetter()
         );
 
-        List<RecentLetterSummary> recentLetters = loadLetterPort.loadRecentLettersByPetId(command.getPet().getId(), command.getLetter().getId().value());
+        List<RecentLetterSummary> recentLetters = loadLetterPort.loadRecentLettersByPetId(
+            command.getPet().getId(),
+            command.getLetter().getId().value(),
+            command.getLetter().getCreatedAt()
+        );
+
+        System.out.println(recentLetters);
 
         final AiClientCommand aiClientCommand = new AiClientCommand(modifiedPrompt, parameterInstances, recentLetters);
 
