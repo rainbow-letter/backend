@@ -348,7 +348,7 @@ class ReadLetterPersistenceAdapter implements LoadLetterPort, CountLetterPort {
                 letterJpaEntity.createdAt.goe(startDate)
             )
             .orderBy(letterJpaEntity.createdAt.desc())
-            .limit(3)
+            .limit(2)
             .fetch();
     }
 
