@@ -53,7 +53,7 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
     private LocalDateTime submitTime;
 
     @NotNull
-    private boolean read;
+    private boolean readStatus;
 
     @NotNull
     @Enumerated(EnumType.STRING)
