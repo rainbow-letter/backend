@@ -42,7 +42,8 @@ class UserRegisterService implements UserRegisterUseCase {
             command.getLastLoggedIn(),
             timeHolder.currentTime(),
             command.getCreatedAt(),
-            command.getUpdatedAt()
+            command.getUpdatedAt(),
+            false
         );
         return registerUserPort.registerUser(user)
             .getId()

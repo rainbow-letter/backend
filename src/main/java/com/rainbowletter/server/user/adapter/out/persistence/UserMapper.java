@@ -21,7 +21,8 @@ class UserMapper {
             jpaEntity.getLastLoggedIn(),
             jpaEntity.getLastChangedPassword(),
             jpaEntity.getCreatedAt(),
-            jpaEntity.getUpdatedAt()
+            jpaEntity.getUpdatedAt(),
+            jpaEntity.isPetInitiatedLetterEnabled()
         );
     }
 
@@ -36,7 +37,8 @@ class UserMapper {
             domain.getProvider(),
             domain.getProviderId(),
             domain.getLastLoggedIn(),
-            domain.getLastChangedPassword()
+            domain.getLastChangedPassword(),
+            domain.isPetInitiatedLetterEnabled()
         );
     }
 

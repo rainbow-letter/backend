@@ -76,7 +76,8 @@ class OAuthLoginHandlerImpl implements OAuthLoginHandler {
             timeHolder.currentTime(),
             timeHolder.currentTime(),
             timeHolder.currentTime(),
-            timeHolder.currentTime()
+            timeHolder.currentTime(),
+            false
         );
         return registerUserPort.registerUser(user);
     }
