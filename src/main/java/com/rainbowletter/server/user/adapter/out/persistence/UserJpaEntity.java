@@ -63,7 +63,7 @@ class UserJpaEntity extends BaseTimeJpaEntity {
     private LocalDateTime lastChangedPassword;
 
     @NotNull
-    private boolean petInitiatedLetterEnabled;
+    private boolean petInitiatedLetterEnabled = false;
 
     @Override
     public boolean equals(final Object o) {
