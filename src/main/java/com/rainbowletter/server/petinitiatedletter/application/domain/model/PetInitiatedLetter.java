@@ -1,6 +1,5 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.model;
 
-import com.rainbowletter.server.ai.application.domain.model.AiPrompt;
 import com.rainbowletter.server.ai.application.domain.model.AiPrompt.PromptType;
 import com.rainbowletter.server.common.adapter.out.persistence.BaseTimeJpaEntity;
 import jakarta.persistence.*;
