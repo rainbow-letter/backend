@@ -121,6 +121,10 @@ public class User extends AggregateRoot {
         this.phoneNumber = phoneNumber;
     }
 
+    public void updatePetInitiatedLetterEnabled(final boolean enabled) {
+        this.petInitiatedLetterEnabled = enabled;
+    }
+
     public void leave() {
         this.status = UserStatus.LEAVE;
     }
