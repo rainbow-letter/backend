@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserPetInitiatedLetterJpaRepository extends JpaRepository<UserPetInitiatedLetter, Long> {
     boolean existsByUserIdAndPetId(Long userId, Long petId);
+    void deleteByUserIdAndPetId(Long userId, Long petId);
 }
