@@ -32,4 +32,10 @@ public class UserPetLetterSettingController {
         userPetLetterSettingService.registerPetForInitiatedLetter(SecurityUtils.getEmail(), request);
     }
 
+    @Operation(summary = "선편지 펫 삭제")
+    @DeleteMapping("/pets")
+    public void deletePetFromInitiatedLetter(@Valid @RequestBody PetSelectionRequest request) {
+        userPetLetterSettingService.deletePetFromInitiatedLetter(SecurityUtils.getEmail(), request);
+    }
+
 }
