@@ -34,6 +34,6 @@ public class UserPetInitiatedLetter {
     private Long userId;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
 }

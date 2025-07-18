@@ -4,8 +4,10 @@ import com.rainbowletter.server.common.application.domain.exception.RainbowLette
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterJpaRepository;
+import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.UserPetInitiatedLetter;
 import com.rainbowletter.server.user.adapter.in.web.dto.PetSelectionRequest;
+import com.rainbowletter.server.user.adapter.in.web.dto.PetSelectionResponse;
 import com.rainbowletter.server.user.adapter.in.web.dto.UserPetLetterSettingRequest;
 import com.rainbowletter.server.user.application.domain.model.User;
 import com.rainbowletter.server.user.application.port.out.LoadUserPort;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,53 +28,60 @@ public class UserPetLetterSettingService {
     private final LoadPetPort loadPetPort;
     private final UpdateUserStatePort updateUserStatePort;
     private final UserPetInitiatedLetterJpaRepository userPetInitiatedLetterJpaRepository;
+    private final UserPetInitiatedLetterPersistenceAdapter userPetInitiatedLetterPersistenceAdapter;
 
     @Transactional
     public void updatePetLetterEnabled(String email, UserPetLetterSettingRequest request) {
-        blockIfInRestrictedTime(email);
+        blockIfInRestrictedTime(email, LocalDateTime.now());
         final User user = loadUserPort.loadUserByEmail(email);
         user.updatePetInitiatedLetterEnabled(request.enabled());
         updateUserStatePort.updateUser(user);
     }
 
     @Transactional
-    public void registerPetForInitiatedLetter(String email, PetSelectionRequest request) {
-        blockIfInRestrictedTime(email);
-        final User user = loadUserPort.loadUserByEmail(email);
-        final Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(request.petId()), user.getId());
+    public List<PetSelectionResponse> registerPetForInitiatedLetter(String email, PetSelectionRequest request) {
+        final LocalDateTime now = LocalDateTime.now();
+        blockIfInRestrictedTime(email, now);
 
-        final Long userId = user.getId().value();
-        final Long petId = pet.getId().value();
+        UserPetIds ids = getUserPetIds(email, request.petId());
 
-        if (userPetInitiatedLetterJpaRepository.existsByUserIdAndPetId(userId, petId)) {
-            throw new RainbowLetterException("이미 등록된 아이입니다.", formatDetail(email, petId));
+        if (userPetInitiatedLetterJpaRepository.existsByUserIdAndPetId(ids.userId(), ids.petId())) {
+            throw new RainbowLetterException("이미 등록된 아이입니다.", formatDetail(email, ids.petId()));
         }
 
         UserPetInitiatedLetter entity = UserPetInitiatedLetter.builder()
-            .userId(userId)
-            .petId(petId)
+            .userId(ids.userId())
+            .petId(ids.petId())
+            .createdAt(LocalDateTime.now())
             .build();
         userPetInitiatedLetterJpaRepository.save(entity);
+
+        return userPetInitiatedLetterPersistenceAdapter.findByUserId(ids.userId());
     }
 
     @Transactional
-    public void deletePetFromInitiatedLetter(String email, PetSelectionRequest request) {
-        blockIfInRestrictedTime(email);
-        final User user = loadUserPort.loadUserByEmail(email);
-        final Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(request.petId()), user.getId());
+    public List<PetSelectionResponse> deletePetFromInitiatedLetter(String email, PetSelectionRequest request) {
+        blockIfInRestrictedTime(email, LocalDateTime.now());
 
-        final Long userId = user.getId().value();
-        final Long petId = pet.getId().value();
+        UserPetIds ids = getUserPetIds(email, request.petId());
 
-        if (!userPetInitiatedLetterJpaRepository.existsByUserIdAndPetId(userId, petId)) {
-            throw new RainbowLetterException("등록되지 않은 펫입니다.", formatDetail(email, petId));
+        if (!userPetInitiatedLetterJpaRepository.existsByUserIdAndPetId(ids.userId(), ids.petId())) {
+            throw new RainbowLetterException("등록되지 않은 펫입니다.", formatDetail(email, ids.petId()));
         }
 
-        userPetInitiatedLetterJpaRepository.deleteByUserIdAndPetId(userId, petId);
+        userPetInitiatedLetterJpaRepository.deleteByUserIdAndPetId(ids.userId(), ids.petId());
+
+        return userPetInitiatedLetterPersistenceAdapter.findByUserId(ids.userId());
     }
 
-    private void blockIfInRestrictedTime(String email) {
-        if (isBlockedTime(LocalDateTime.now())) {
+    private UserPetIds getUserPetIds(String email, Long petId) {
+        User user = loadUserPort.loadUserByEmail(email);
+        Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(petId), user.getId());
+        return new UserPetIds(user.getId().value(), pet.getId().value());
+    }
+
+    private void blockIfInRestrictedTime(String email, LocalDateTime now) {
+        if (isBlockedTime(now)) {
             throw new RainbowLetterException("현재 시간에는 선편지 설정 변경이 불가능합니다. (월/수/금 19:30~20:00 제한)", email);
         }
     }
@@ -89,5 +99,8 @@ public class UserPetLetterSettingService {
 
     private String formatDetail(String email, Long petId) {
         return String.format("Email: %s, PetId: %d", email, petId);
+    }
+
+    private record UserPetIds(Long userId, Long petId) {
     }
 }
