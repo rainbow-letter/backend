@@ -2,7 +2,6 @@ package com.rainbowletter.server.user.adapter.in.web;
 
 import com.rainbowletter.server.common.annotation.WebAdapter;
 import com.rainbowletter.server.common.util.SecurityUtils;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetLetterSettingResponse;
 import com.rainbowletter.server.user.adapter.in.web.dto.PetSelectionRequest;
 import com.rainbowletter.server.user.adapter.in.web.dto.PetSelectionResponse;
 import com.rainbowletter.server.user.adapter.in.web.dto.UserPetLetterSettingRequest;
@@ -30,13 +29,6 @@ public class UserPetLetterSettingController {
     @PutMapping("/enabled")
     public void updatePetLetterEnabled(@Valid @RequestBody UserPetLetterSettingRequest request) {
         userPetLetterSettingService.updatePetLetterEnabled(SecurityUtils.getEmail(), request);
-    }
-
-    @Operation(summary = "선편지 ON/OFF 조회")
-    @GetMapping("/enabled")
-    public ResponseEntity<PetLetterSettingResponse> getPetLetterEnabled() {
-        PetLetterSettingResponse response = userPetLetterSettingService.getPetLetterEnabled(SecurityUtils.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "선편지 펫 등록")
