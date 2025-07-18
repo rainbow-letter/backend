@@ -19,7 +19,7 @@ import java.util.List;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users/pet-initiated-letter")
+@RequestMapping("/api/users/pet-initiated-letters")
 @Tag(name = "user", description = "회원")
 public class UserPetLetterSettingController {
 
