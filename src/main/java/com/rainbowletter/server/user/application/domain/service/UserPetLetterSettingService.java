@@ -3,6 +3,7 @@ package com.rainbowletter.server.user.application.domain.service;
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetLetterSettingResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.UserPetInitiatedLetter;
@@ -78,6 +79,13 @@ public class UserPetLetterSettingService {
         userPetInitiatedLetterJpaRepository.deleteByUserIdAndPetId(ids.userId(), ids.petId());
 
         return userPetInitiatedLetterPersistenceAdapter.findByUserId(ids.userId());
+    }
+
+    @Transactional(readOnly = true)
+    public PetLetterSettingResponse getPetLetterEnabled(String email) {
+        User user = loadUserPort.loadUserByEmail(email);
+        boolean isEnabled = user.isPetInitiatedLetterEnabled();
+        return new PetLetterSettingResponse(isEnabled);
     }
 
     private UserPetIds getUserPetIds(User user, Long petId) {
