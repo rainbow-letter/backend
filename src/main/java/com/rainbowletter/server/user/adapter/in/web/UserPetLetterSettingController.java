@@ -33,19 +33,26 @@ public class UserPetLetterSettingController {
 
     @Operation(summary = "선편지 펫 등록")
     @PostMapping("/pets")
-    public ResponseEntity<List<PetSelectionResponse>> registerPetForInitiatedLetter(
+    public ResponseEntity<List<PetSelectionResponse>> registerInitiatedLetterPet(
         @Valid @RequestBody PetSelectionRequest request
     ) {
         List<PetSelectionResponse> response =
-            userPetLetterSettingService.registerPetForInitiatedLetter(SecurityUtils.getEmail(), request);
+            userPetLetterSettingService.registerInitiatedLetterPet(SecurityUtils.getEmail(), request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "선편지 펫 삭제")
     @DeleteMapping("/pets")
-    public ResponseEntity<List<PetSelectionResponse>> deletePetFromInitiatedLetter(@Valid @RequestBody PetSelectionRequest request) {
+    public ResponseEntity<List<PetSelectionResponse>> removeInitiatedLetterPet(@Valid @RequestBody PetSelectionRequest request) {
         List<PetSelectionResponse> response =
-            userPetLetterSettingService.deletePetFromInitiatedLetter(SecurityUtils.getEmail(), request);
+            userPetLetterSettingService.removeInitiatedLetterPet(SecurityUtils.getEmail(), request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "선편지 펫 리스트 조회")
+    @GetMapping("/pets")
+    public ResponseEntity<List<PetSelectionResponse>> getInitiatedLetterPets() {
+        List<PetSelectionResponse> response = userPetLetterSettingService.getInitiatedLetterPets(SecurityUtils.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

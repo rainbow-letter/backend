@@ -3,7 +3,6 @@ package com.rainbowletter.server.user.application.domain.service;
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetLetterSettingResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.UserPetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.UserPetInitiatedLetter;
@@ -40,7 +39,7 @@ public class UserPetLetterSettingService {
     }
 
     @Transactional
-    public List<PetSelectionResponse> registerPetForInitiatedLetter(String email, PetSelectionRequest request) {
+    public List<PetSelectionResponse> registerInitiatedLetterPet(String email, PetSelectionRequest request) {
         final LocalDateTime now = LocalDateTime.now();
         validateNotInRestrictedTime(email, now);
 
@@ -64,7 +63,7 @@ public class UserPetLetterSettingService {
     }
 
     @Transactional
-    public List<PetSelectionResponse> deletePetFromInitiatedLetter(String email, PetSelectionRequest request) {
+    public List<PetSelectionResponse> removeInitiatedLetterPet(String email, PetSelectionRequest request) {
         validateNotInRestrictedTime(email, LocalDateTime.now());
 
         User user = loadUserPort.loadUserByEmail(email);
@@ -82,10 +81,11 @@ public class UserPetLetterSettingService {
     }
 
     @Transactional(readOnly = true)
-    public PetLetterSettingResponse getPetLetterEnabled(String email) {
+    public List<PetSelectionResponse> getInitiatedLetterPets(String email) {
         User user = loadUserPort.loadUserByEmail(email);
-        boolean isEnabled = user.isPetInitiatedLetterEnabled();
-        return new PetLetterSettingResponse(isEnabled);
+        validateUserPetInitiatedLetterEnabled(user);
+
+        return userPetInitiatedLetterPersistenceAdapter.findByUserId(user.getId().value());
     }
 
     private UserPetIds getUserPetIds(User user, Long petId) {
