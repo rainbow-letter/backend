@@ -60,6 +60,7 @@ public class PetInitiatedLetterPersistenceAdapter {
                 petInitiatedLetter.content,
                 petInitiatedLetter.status,
                 userJpaEntity.email,
+                userJpaEntity.id,
                 userJpaEntity.petInitiatedLetterEnabled,
                 petInitiatedLetter.submitTime
             ))
