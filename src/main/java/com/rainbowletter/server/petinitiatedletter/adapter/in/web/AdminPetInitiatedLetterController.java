@@ -1,6 +1,7 @@
 package com.rainbowletter.server.petinitiatedletter.adapter.in.web;
 
 import com.rainbowletter.server.common.annotation.WebAdapter;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterDetailResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.RetrievePetInitiatedLettersRequest;
 import com.rainbowletter.server.petinitiatedletter.application.domain.service.PetInitiatedLetterService;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @WebAdapter
 @RestController
@@ -34,6 +32,18 @@ public class AdminPetInitiatedLetterController {
         @ParameterObject Pageable pageable
     ) {
         Page<PetInitiatedLetterResponse> response = petInitiatedLetterService.getPetInitiatedLetters(request, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "선편지 상세 조회")
+    @GetMapping("/{letter-id}")
+    public ResponseEntity<PetInitiatedLetterDetailResponse> getPetInitiatedLetterDetail(
+        @PathVariable("letter-id") Long letterId,
+        @RequestParam("user-id") Long userId,
+        @RequestParam("pet-id") Long petId
+    ) {
+        PetInitiatedLetterDetailResponse response =
+            petInitiatedLetterService.getPetInitiatedLetterDetail(letterId, userId, petId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
