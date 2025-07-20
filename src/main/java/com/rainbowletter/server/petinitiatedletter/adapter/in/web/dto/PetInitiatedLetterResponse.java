@@ -11,6 +11,7 @@ public record PetInitiatedLetterResponse(
     String content,
     PetInitiatedLetterStatus status,
     String userEmail,
+    Long userId,
     boolean isPetInitiatedLetterEnabled,
     LocalDateTime submitTime
 ) {
