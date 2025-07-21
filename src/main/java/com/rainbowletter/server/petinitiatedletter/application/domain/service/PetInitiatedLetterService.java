@@ -1,10 +1,10 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterForAdminResponse;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterResponse;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLettersForAdminResponse;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.RetrievePetInitiatedLettersRequest;
+import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.*;
+import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterPersistenceAdapter;
+import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetInitiatedLetterService {
 
+    private final PetInitiatedLetterJpaRepository petInitiatedLetterJpaRepository;
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
 
     @Transactional(readOnly = true)
@@ -42,5 +43,13 @@ public class PetInitiatedLetterService {
             petInitiatedLetterList,
             partialResponse.petInitiatedLetterDetailResponse()
         );
+    }
+
+    @Transactional
+    public void updatePetInitiatedLetter(Long letterId, PetInitiatedLetterUpdateRequest request) {
+        PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findById(letterId)
+            .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
+
+        letter.update(request.promptType(), request.summary(), request.content());
     }
 }
