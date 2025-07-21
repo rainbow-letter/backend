@@ -2,23 +2,26 @@ package com.rainbowletter.server.petinitiatedletter.adapter.out.persistence;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rainbowletter.server.common.annotation.PersistenceAdapter;
+import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.letter.adapter.in.web.dto.RetrieveLetterRequest;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterResponse;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterSimpleResponse;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.RetrievePetInitiatedLettersRequest;
+import com.rainbowletter.server.pet.application.port.in.dto.PetForAdminResponse;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.*;
+import com.rainbowletter.server.user.application.port.in.dto.UserForAdminResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
+import static com.rainbowletter.server.pet.adapter.out.persistence.QPetJpaEntity.petJpaEntity;
 import static com.rainbowletter.server.petinitiatedletter.application.domain.model.QPetInitiatedLetter.petInitiatedLetter;
 import static com.rainbowletter.server.user.adapter.out.persistence.QUserJpaEntity.userJpaEntity;
-
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -101,4 +104,75 @@ public class PetInitiatedLetterPersistenceAdapter {
         return builder;
     }
 
+    public PetInitiatedLetterForAdminResponse getPetInitiatedLetterDetail(Long letterId, Long userId, Long petId) {
+        PetInitiatedLetterForAdminResponse result = queryFactory.select(Projections.constructor(
+                PetInitiatedLetterForAdminResponse.class,
+                Projections.constructor(
+                    UserForAdminResponse.class,
+                    userJpaEntity.id,
+                    userJpaEntity.email,
+                    userJpaEntity.phoneNumber,
+                    userJpaEntity.lastLoggedIn,
+                    userJpaEntity.createdAt,
+                    userJpaEntity.petInitiatedLetterEnabled
+                ),
+                Expressions.constant(0L),
+                Projections.constructor(
+                    PetForAdminResponse.class,
+                    petJpaEntity.id,
+                    petJpaEntity.name,
+                    petJpaEntity.owner,
+                    petJpaEntity.species,
+                    petJpaEntity.personalities,
+                    petJpaEntity.deathAnniversary
+                ),
+                Expressions.constant(Collections.emptyList()),
+                Projections.constructor(
+                    PetInitiatedLetterDetailResponse.class,
+                    petInitiatedLetter.id,
+                    petInitiatedLetter.status,
+                    petInitiatedLetter.submitTime,
+                    petInitiatedLetter.createdAt,
+                    petInitiatedLetter.promptA,
+                    petInitiatedLetter.promptB
+                )
+            ))
+            .from(petInitiatedLetter)
+            .join(userJpaEntity).on(petInitiatedLetter.userId.eq(userJpaEntity.id))
+            .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
+            .where(
+                petInitiatedLetter.id.eq(letterId),
+                userJpaEntity.id.eq(userId),
+                petJpaEntity.id.eq(petId)
+            )
+            .fetchOne();
+
+        if (result == null) {
+            throw new RainbowLetterException(
+                "해당 선편지 정보를 찾을 수 없습니다.",
+                "UserId : " + userId + " PetId : " + petId + " PetInitiatedLetterId : " + letterId
+            );
+        }
+
+        return result;
+    }
+
+    public List<PetInitiatedLettersForAdminResponse> getPetInitiatedLetterListByUserId(Long userId) {
+        return queryFactory.select(Projections.constructor(
+                PetInitiatedLettersForAdminResponse.class,
+                petInitiatedLetter.id,
+                petJpaEntity.name,
+                petInitiatedLetter.summary,
+                petInitiatedLetter.status,
+                petInitiatedLetter.createdAt
+            ))
+            .from(petInitiatedLetter)
+            .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
+            .where(
+                petInitiatedLetter.userId.eq(userId),
+                petJpaEntity.userId.eq(userId)
+            )
+            .orderBy(petInitiatedLetter.createdAt.desc())
+            .fetch();
+    }
 }

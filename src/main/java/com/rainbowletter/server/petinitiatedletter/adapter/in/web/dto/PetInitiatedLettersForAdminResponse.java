@@ -4,12 +4,11 @@ import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetI
 
 import java.time.LocalDateTime;
 
-public record PetInitiatedLetterDetailResponse(
+public record PetInitiatedLettersForAdminResponse(
     Long id,
+    String petName,
+    String summary,
     PetInitiatedLetterStatus petInitiatedLetterStatus,
-    LocalDateTime submitTime,
-    LocalDateTime createdAt,
-    String promptA,
-    String promptB
+    LocalDateTime createdAt
 ) {
 }
