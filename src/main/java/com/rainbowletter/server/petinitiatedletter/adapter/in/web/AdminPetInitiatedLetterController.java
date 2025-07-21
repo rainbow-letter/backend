@@ -1,7 +1,7 @@
 package com.rainbowletter.server.petinitiatedletter.adapter.in.web;
 
 import com.rainbowletter.server.common.annotation.WebAdapter;
-import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterDetailResponse;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterForAdminResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.RetrievePetInitiatedLettersRequest;
 import com.rainbowletter.server.petinitiatedletter.application.domain.service.PetInitiatedLetterService;
@@ -37,12 +37,12 @@ public class AdminPetInitiatedLetterController {
 
     @Operation(summary = "선편지 상세 조회")
     @GetMapping("/{letter-id}")
-    public ResponseEntity<PetInitiatedLetterDetailResponse> getPetInitiatedLetterDetail(
+    public ResponseEntity<PetInitiatedLetterForAdminResponse> getPetInitiatedLetterDetail(
         @PathVariable("letter-id") Long letterId,
         @RequestParam("user-id") Long userId,
         @RequestParam("pet-id") Long petId
     ) {
-        PetInitiatedLetterDetailResponse response =
+        PetInitiatedLetterForAdminResponse response =
             petInitiatedLetterService.getPetInitiatedLetterDetail(letterId, userId, petId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
