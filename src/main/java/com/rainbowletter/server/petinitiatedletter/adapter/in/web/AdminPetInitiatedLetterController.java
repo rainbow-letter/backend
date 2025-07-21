@@ -3,6 +3,7 @@ package com.rainbowletter.server.petinitiatedletter.adapter.in.web;
 import com.rainbowletter.server.common.annotation.WebAdapter;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterForAdminResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterResponse;
+import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.PetInitiatedLetterUpdateRequest;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.RetrievePetInitiatedLettersRequest;
 import com.rainbowletter.server.petinitiatedletter.application.domain.service.PetInitiatedLetterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,15 @@ public class AdminPetInitiatedLetterController {
         PetInitiatedLetterForAdminResponse response =
             petInitiatedLetterService.getPetInitiatedLetterDetail(letterId, userId, petId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "선편지 수정")
+    @PutMapping("/{letter-id}")
+    public void updatePetInitiatedLetter(
+        @PathVariable("letter-id") Long letterId,
+        @Valid @RequestBody PetInitiatedLetterUpdateRequest request
+    ) {
+        petInitiatedLetterService.updatePetInitiatedLetter(letterId, request);
     }
 
 }

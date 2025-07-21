@@ -58,4 +58,16 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
     @Enumerated(EnumType.STRING)
     private PetInitiatedLetterStatus status;
 
+    public void update(final PromptType promptType, final String summary, final String content) {
+        this.promptType = promptType;
+        this.summary = summary;
+        this.content = content;
+
+        if (promptType == PromptType.A) {
+            this.promptA = content;
+        } else if (promptType == PromptType.B) {
+            this.promptB = content;
+        }
+    }
+
 }
