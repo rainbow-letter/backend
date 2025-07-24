@@ -4,4 +4,6 @@ public interface UpdateAiConfigUseCase {
 
     void updateConfig(UpdateAiConfigCommand command);
 
+    void updatePetInitiatedLetterConfig(UpdateAiConfigCommand command);
+
 }
