@@ -26,4 +26,10 @@ class UpdateAiConfigController {
         updateAiConfigUseCase.updateConfig(command);
     }
 
+    @PutMapping("/config/pet-initiated-letter")
+    void updatePetInitiatedLetterConfig(@RequestBody final UpdateAiConfigRequest request) {
+        final var command = new UpdateAiConfigCommand(request.useABTest(), request.selectPrompt());
+        updateAiConfigUseCase.updatePetInitiatedLetterConfig(command);
+    }
+
 }
