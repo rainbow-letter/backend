@@ -25,4 +25,10 @@ class GetAiSettingController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/setting/pet-initiated-letter")
+    ResponseEntity<AiSettingResponse> getPetInitiatedLetterSetting() {
+        final AiSettingResponse response = getAiSettingUseCase.getPetInitiatedLetterSetting();
+        return ResponseEntity.ok(response);
+    }
+
 }

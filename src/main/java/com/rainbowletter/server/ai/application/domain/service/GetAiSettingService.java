@@ -21,4 +21,10 @@ class GetAiSettingService implements GetAiSettingUseCase {
         return AiSettingResponse.from(aiSetting);
     }
 
+    @Override
+    public AiSettingResponse getPetInitiatedLetterSetting() {
+        final AiSetting aiSetting = loadSettingPort.loadPetInitiatedLetterSetting();
+        return AiSettingResponse.from(aiSetting);
+    }
+
 }
