@@ -36,6 +36,18 @@ class AiSettingPersistenceAdapter implements LoadSettingPort, UpdateSettingState
     }
 
     @Override
+    public AiSetting loadPetInitiatedLetterSetting() {
+        final AiConfigJpaEntity aiConfig = aiConfigJpaRepository.findById(2L)
+            .orElseThrow(() -> new RainbowLetterException("not.exists.ai.letter.setting"));
+
+        List<AiPrompt> prompts = Stream.of(3L, 4L)
+            .map(id -> loadPrompt(new AiPromptId(id)))
+            .toList();
+
+        return aiSettingMapper.mapToDomain(aiConfig, prompts);
+    }
+
+    @Override
     public AiPrompt loadPrompt(final AiPromptId id) {
         final var aiPromptEntity = aiPromptJpaRepository.findById(id.value())
             .orElseThrow(() -> new RainbowLetterException("not.exists.ai.prompt"));
