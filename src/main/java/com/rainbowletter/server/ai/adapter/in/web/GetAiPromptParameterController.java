@@ -3,6 +3,7 @@ package com.rainbowletter.server.ai.adapter.in.web;
 import com.rainbowletter.server.ai.application.port.in.GetAiPromptParameterUseCase;
 import com.rainbowletter.server.ai.application.port.in.dto.AiPromptParameterResponse;
 import com.rainbowletter.server.common.annotation.WebAdapter;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admins/ai")
-@Tag(name = "ai")
+@Tag(name = "ai", description = "AI 관련")
 class GetAiPromptParameterController {
 
     private final GetAiPromptParameterUseCase getAiPromptParameterUseCase;
 
+    @Operation(summary = "파라미터 조회")
     @GetMapping("/parameters")
     ResponseEntity<AiPromptParameterResponse> getParameters() {
         final AiPromptParameterResponse response = getAiPromptParameterUseCase.getPromptParameters();
