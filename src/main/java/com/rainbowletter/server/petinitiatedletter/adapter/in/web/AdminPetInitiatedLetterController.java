@@ -57,4 +57,10 @@ public class AdminPetInitiatedLetterController {
         petInitiatedLetterService.updatePetInitiatedLetter(letterId, request);
     }
 
+    @Operation(summary = "선편지 GPT 재생성")
+    @PostMapping("/generate/{letter-id}")
+    public void generate(@PathVariable("letter-id") Long letterId) {
+        petInitiatedLetterService.regeneratePetInitiatedLetter(letterId);
+    }
+
 }
