@@ -15,7 +15,6 @@ import com.rainbowletter.server.reply.application.domain.model.Reply.ReplyStatus
 import com.rainbowletter.server.reply.application.port.out.GenerateReplyCommand;
 import com.rainbowletter.server.reply.application.port.out.GenerateReplyPort;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 class ReplyGenerator implements GenerateReplyPort {
 
     private final LoadLetterPort loadLetterPort;
@@ -99,11 +97,7 @@ class ReplyGenerator implements GenerateReplyPort {
             command.getLetter().getCreatedAt()
         );
 
-        System.out.println(recentLetters);
-
         final AiClientCommand aiClientCommand = new AiClientCommand(modifiedPrompt, parameterInstances, recentLetters);
-
-        log.info(aiClientCommand.toString());
 
         return callAiClientPort.call(aiClientCommand)
             .getResult()
