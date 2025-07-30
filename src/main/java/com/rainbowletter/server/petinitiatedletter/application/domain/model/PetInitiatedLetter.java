@@ -2,6 +2,7 @@ package com.rainbowletter.server.petinitiatedletter.application.domain.model;
 
 import com.rainbowletter.server.ai.application.domain.model.AiPrompt.PromptType;
 import com.rainbowletter.server.common.adapter.out.persistence.BaseTimeJpaEntity;
+import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -70,4 +71,11 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
         }
     }
 
+    public void generate(GeneratedLetterContent generatedLetterContent) {
+        this.summary = generatedLetterContent.summary();
+        this.content = generatedLetterContent.content();
+        this.promptA = generatedLetterContent.promptA();
+        this.promptB = generatedLetterContent.promptB();
+        this.promptType = generatedLetterContent.selectedPrompt();
+    }
 }
