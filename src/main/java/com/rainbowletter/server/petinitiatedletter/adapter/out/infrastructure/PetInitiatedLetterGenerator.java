@@ -28,10 +28,7 @@ public class PetInitiatedLetterGenerator {
         if (Boolean.TRUE.equals(aiSetting.getUseABTest())) {
             final Map<PromptType, String> results = new EnumMap<>(PromptType.class);
             aiSetting.getPrompts().forEach(prompt -> {
-                final String systemPrompt = buildDynamicSystemPrompt(prompt.getSystem(), pet);
-                final AiPrompt modifiedPrompt = prompt.withSystem(systemPrompt);
-
-                final AiClientCommand command = new AiClientCommand(modifiedPrompt, List.of(pet), List.of());
+                final AiClientCommand command = new AiClientCommand(prompt, List.of(pet), List.of());
                 final String content = callAiClientPort.call(command)
                     .getResult()
                     .getOutput()
@@ -50,10 +47,7 @@ public class PetInitiatedLetterGenerator {
             );
         } else {
             final AiPrompt selectedPrompt = aiSetting.getSelectedPrompt();
-            final String systemPrompt = buildDynamicSystemPrompt(selectedPrompt.getSystem(), pet);
-            final AiPrompt modifiedPrompt = selectedPrompt.withSystem(systemPrompt);
-
-            final AiClientCommand command = new AiClientCommand(modifiedPrompt, List.of(pet), List.of());
+            final AiClientCommand command = new AiClientCommand(selectedPrompt, List.of(pet), List.of());
             final String content = callAiClientPort.call(command)
                 .getResult()
                 .getOutput()
@@ -67,18 +61,6 @@ public class PetInitiatedLetterGenerator {
                 selectedPrompt.getType()
             );
         }
-    }
-
-    private String buildDynamicSystemPrompt(String baseSystem, Pet pet) {
-        List<String> personalities = pet.getPersonalities();
-
-        if (personalities == null || personalities.isEmpty()) {
-            return baseSystem;
-        }
-
-        String joined = String.join(", ", personalities);
-        return baseSystem + "\n\n" +
-            pet.getName() + "은 " + joined + " 성격을 가지고 있어. 이런 성격이 드러나게끔 편지를 작성해줘.";
     }
 
 }
