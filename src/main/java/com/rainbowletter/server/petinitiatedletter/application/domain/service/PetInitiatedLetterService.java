@@ -8,6 +8,7 @@ import com.rainbowletter.server.petinitiatedletter.adapter.out.infrastructure.Pe
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
+import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus;
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import com.rainbowletter.server.user.application.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,10 @@ public class PetInitiatedLetterService {
     public void regeneratePetInitiatedLetter(Long letterId) {
         PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findById(letterId)
             .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
+
+        if (!letter.getStatus().equals(PetInitiatedLetterStatus.READY_TO_SEND)) {
+            throw new RainbowLetterException("발송 대기 상태인 선편지만 재생성이 가능합니다.", "선편지 ID : " + letterId);
+        }
 
         Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(letter.getPetId()), new User.UserId(letter.getUserId()));
 
