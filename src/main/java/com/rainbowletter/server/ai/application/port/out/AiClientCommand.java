@@ -29,6 +29,10 @@ public class AiClientCommand {
         this.messages = buildMessages(aiPrompt, parameterInstances, recentLetters);
     }
 
+    public AiClientCommand(final AiPrompt aiPrompt, final List<Object> parameterInstances) {
+        this(aiPrompt, parameterInstances, List.of());
+    }
+
     private List<Message> buildMessages(
         final AiPrompt aiPrompt,
         final List<Object> parameterInstances,
@@ -53,27 +57,22 @@ public class AiClientCommand {
             aiPrompt.getParameters(),
             parameterInstances
         );
-        messages.add(new Message(USER, currentPrompt));
+        messages.add(new Message(
+            USER, combineUserParameters(aiPrompt.getUser(), aiPrompt.getParameters(), parameterInstances)));
 
         return messages;
     }
 
-    private String combineUserParameters(
-        final String userPrompt,
-        final List<Parameter> parameters,
-        final List<Object> parameterInstances
-    ) {
-        final ArrayList<String> formatValues = new ArrayList<>();
-        for (final Parameter parameter : parameters) {
-            final String value = parameter.value(
-                parameterInstances.stream()
-                    .filter(parameterInstance -> parameter.getClazz().isInstance(parameterInstance))
+    private String combineUserParameters(String userPrompt, List<Parameter> parameters, List<Object> instances) {
+        List<String> values = parameters.stream()
+            .map(parameter -> parameter.value(
+                instances.stream()
+                    .filter(parameter.getClazz()::isInstance)
                     .findAny()
-                    .orElseThrow(() -> new RainbowLetterException("Ai 파라미터 인스턴스가 존재하지 않습니다."))
-            );
-            formatValues.add(value);
-        }
-        return String.format(userPrompt, formatValues.toArray());
+                    .orElseThrow(() -> new RainbowLetterException("Ai 파라미터 인스턴스가 존재하지 않습니다."))))
+            .toList();
+
+        return String.format(userPrompt, values.toArray());
     }
 
     @Value
