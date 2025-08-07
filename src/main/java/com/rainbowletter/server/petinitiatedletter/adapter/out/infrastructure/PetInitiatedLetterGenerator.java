@@ -23,32 +23,35 @@ public class PetInitiatedLetterGenerator {
     private final CallAiClientPort callAiClientPort;
 
     public GeneratedLetterContent generate(Pet pet) {
-        final AiSetting aiSetting = loadSettingPort.loadSetting();
+        final AiSetting aiSetting = loadSettingPort.loadPetInitiatedLetterSetting();
 
         if (Boolean.TRUE.equals(aiSetting.getUseABTest())) {
             final Map<PromptType, String> results = new EnumMap<>(PromptType.class);
-            aiSetting.getPrompts().forEach(prompt -> {
-                final AiClientCommand command = new AiClientCommand(prompt, List.of(pet), List.of());
-                final String content = callAiClientPort.call(command)
+
+            for (AiPrompt prompt : aiSetting.getPrompts()) {
+                String content = callAiClientPort.call(new AiClientCommand(prompt, List.of(pet)))
                     .getResult()
                     .getOutput()
                     .getContent();
-
                 results.put(prompt.getType(), content);
-            });
+            }
 
-            final PromptType selected = aiSetting.getSelectPrompt();
+            PromptType selected = aiSetting.getSelectPrompt();
+            String contentA = results.get(PromptType.A);
+            String contentB = results.get(PromptType.B);
+            String selectedContent = selected == PromptType.A ? contentA : contentB;
+
             return new GeneratedLetterContent(
-                selected == PromptType.A ? results.get(PromptType.A).substring(0, 20) : results.get(PromptType.B).substring(0, 20),
-                selected == PromptType.A ? results.get(PromptType.A) : results.get(PromptType.B),
-                results.get(PromptType.A),
-                results.get(PromptType.B),
+                selectedContent.substring(0, 20),
+                selectedContent,
+                contentA,
+                contentB,
                 selected
             );
+
         } else {
-            final AiPrompt selectedPrompt = aiSetting.getSelectedPrompt();
-            final AiClientCommand command = new AiClientCommand(selectedPrompt, List.of(pet), List.of());
-            final String content = callAiClientPort.call(command)
+            AiPrompt selectedPrompt = aiSetting.getSelectedPrompt();
+            String content = callAiClientPort.call(new AiClientCommand(selectedPrompt, List.of(pet)))
                 .getResult()
                 .getOutput()
                 .getContent();
@@ -62,5 +65,4 @@ public class PetInitiatedLetterGenerator {
             );
         }
     }
-
 }
