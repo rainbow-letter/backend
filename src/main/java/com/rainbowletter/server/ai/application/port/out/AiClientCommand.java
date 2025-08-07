@@ -57,9 +57,8 @@ public class AiClientCommand {
             aiPrompt.getParameters(),
             parameterInstances
         );
-        messages.add(new Message(
-            USER, combineUserParameters(aiPrompt.getUser(), aiPrompt.getParameters(), parameterInstances)));
 
+        messages.add(new Message(USER, currentPrompt));
         return messages;
     }
 
