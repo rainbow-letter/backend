@@ -2,6 +2,7 @@ package com.rainbowletter.server.petinitiatedletter.application.domain.model;
 
 import com.rainbowletter.server.ai.application.domain.model.AiPrompt.PromptType;
 import com.rainbowletter.server.common.adapter.out.persistence.BaseTimeJpaEntity;
+import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -77,5 +78,17 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
         this.promptA = generatedLetterContent.promptA();
         this.promptB = generatedLetterContent.promptB();
         this.promptType = generatedLetterContent.selectedPrompt();
+    }
+
+    public void submit(final LocalDateTime submitTime) {
+        validateSubmit();
+        this.status = PetInitiatedLetterStatus.SENT;
+        this.submitTime = submitTime;
+    }
+
+    private void validateSubmit() {
+        if (this.status == PetInitiatedLetterStatus.SENT) {
+            throw new RainbowLetterException("이미 발송된 편지입니다.", this.getId());
+        }
     }
 }
