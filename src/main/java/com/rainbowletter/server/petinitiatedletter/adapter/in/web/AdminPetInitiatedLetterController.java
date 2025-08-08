@@ -63,4 +63,10 @@ public class AdminPetInitiatedLetterController {
         petInitiatedLetterService.regeneratePetInitiatedLetter(letterId);
     }
 
+    @Operation(summary = "선편지 발송")
+    @PostMapping("/submit/{letter-id}")
+    public void submit(@PathVariable("letter-id") Long letterId) {
+        petInitiatedLetterService.submitPetInitiatedLetter(letterId);
+    }
+
 }

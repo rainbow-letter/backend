@@ -1,6 +1,7 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
+import com.rainbowletter.server.common.util.TimeHolder;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.*;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PetInitiatedLetterService {
 
+    private final TimeHolder timeHolder;
     private final PetInitiatedLetterJpaRepository petInitiatedLetterJpaRepository;
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
     private final PetInitiatedLetterGenerator petInitiatedLetterGenerator;
@@ -55,16 +57,14 @@ public class PetInitiatedLetterService {
 
     @Transactional
     public void updatePetInitiatedLetter(Long letterId, PetInitiatedLetterUpdateRequest request) {
-        PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findById(letterId)
-            .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
+        PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
 
         letter.update(request.promptType(), request.summary(), request.content());
     }
 
     @Transactional
     public void regeneratePetInitiatedLetter(Long letterId) {
-        PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findById(letterId)
-            .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
+        PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
 
         if (!letter.getStatus().equals(PetInitiatedLetterStatus.READY_TO_SEND)) {
             throw new RainbowLetterException("발송 대기 상태인 선편지만 재생성이 가능합니다.", "선편지 ID : " + letterId);
@@ -75,5 +75,17 @@ public class PetInitiatedLetterService {
         GeneratedLetterContent generatedLetterContent = petInitiatedLetterGenerator.generate(pet);
 
         letter.generate(generatedLetterContent);
+    }
+
+    @Transactional
+    public void submitPetInitiatedLetter(Long letterId) {
+        PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
+        letter.submit(timeHolder.currentTime());
+
+    }
+
+    private PetInitiatedLetter getPetInitiatedLetter(Long letterId) {
+        return petInitiatedLetterJpaRepository.findById(letterId)
+            .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
     }
 }
