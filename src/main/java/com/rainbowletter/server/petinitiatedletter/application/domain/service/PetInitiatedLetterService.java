@@ -10,9 +10,11 @@ import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetIn
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus;
+import com.rainbowletter.server.petinitiatedletter.application.domain.model.SubmitPetInitiatedLetterEvent;
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import com.rainbowletter.server.user.application.domain.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class PetInitiatedLetterService {
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
     private final PetInitiatedLetterGenerator petInitiatedLetterGenerator;
     private final LoadPetPort loadPetPort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public Page<PetInitiatedLetterResponse> getPetInitiatedLetters(
@@ -81,6 +84,7 @@ public class PetInitiatedLetterService {
     public void submitPetInitiatedLetter(Long letterId) {
         PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
         letter.submit(timeHolder.currentTime());
+        eventPublisher.publishEvent(new SubmitPetInitiatedLetterEvent(letter));
 
     }
 
