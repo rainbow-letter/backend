@@ -7,6 +7,7 @@ import com.rainbowletter.server.notification.application.port.in.GetMailTemplate
 import com.rainbowletter.server.notification.application.port.in.SendMailCommand;
 import com.rainbowletter.server.notification.application.port.in.SendMailUseCase;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
+import com.rainbowletter.server.pet.application.port.in.dto.PetSummary;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.SubmitPetInitiatedLetterEvent;
@@ -34,22 +35,22 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
     public void handleSubmitPetInitiatedLetter(SubmitPetInitiatedLetterEvent event) {
         PetInitiatedLetter letter = event.petInitiatedLetter();
         User user = loadUserPort.loadUserById(new User.UserId(letter.getUserId()));
-        Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(letter.getPetId()), user.getId());
+        PetSummary pet = loadPetPort.findPetSummaryById(letter.getPetId(), letter.getUserId());
 
 //        sendAlimTalk(user, pet, letter);
         sendMail(user, pet, letter);
     }
 
-    private void sendMail(User user, Pet pet, PetInitiatedLetter letter) {
-        GetMailTemplateQuery titleQuery = GetMailTemplateQuery.titleQuery(MailTemplateCode.PET_INITIATED_LETTER, pet.getName());
+    private void sendMail(User user, PetSummary pet, PetInitiatedLetter letter) {
+        GetMailTemplateQuery titleQuery = GetMailTemplateQuery.titleQuery(MailTemplateCode.PET_INITIATED_LETTER, pet.name());
         String title = getMailTemplateUseCase.getTitle(titleQuery);
 
         final var contentQuery = GetMailTemplateQuery.contentQuery(
             MailTemplateCode.PET_INITIATED_LETTER,
             user.getEmail(),
             List.of(
-                "/share/" + letter.getShareLink(),
-                pet.getName()
+                "/share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck",
+                pet.name()
             )
         );
         final String content = getMailTemplateUseCase.getContent(contentQuery);

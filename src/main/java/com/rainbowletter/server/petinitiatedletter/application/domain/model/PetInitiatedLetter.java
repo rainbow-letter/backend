@@ -7,8 +7,11 @@ import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.Gener
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -30,6 +33,10 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
 
     @NotNull
     private Long petId;
+
+    @NotNull
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    private UUID shareLink;
 
     @NotNull
     @Column(length = 20)
