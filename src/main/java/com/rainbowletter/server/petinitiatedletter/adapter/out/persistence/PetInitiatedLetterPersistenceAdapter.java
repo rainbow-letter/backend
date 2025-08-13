@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.rainbowletter.server.pet.adapter.out.persistence.QPetJpaEntity.petJpaEntity;
 import static com.rainbowletter.server.petinitiatedletter.application.domain.model.QPetInitiatedLetter.petInitiatedLetter;
@@ -174,5 +175,24 @@ public class PetInitiatedLetterPersistenceAdapter {
             )
             .orderBy(petInitiatedLetter.createdAt.desc())
             .fetch();
+    }
+
+    public PetInitiatedLetterWithPetNameResponse getLetterByShareLink(UUID shareLink) {
+        return queryFactory.select(Projections.constructor(
+                PetInitiatedLetterWithPetNameResponse.class,
+                petInitiatedLetter.id,
+                petInitiatedLetter.createdAt,
+                petInitiatedLetter.submitTime,
+                petInitiatedLetter.summary,
+                petInitiatedLetter.content,
+                petJpaEntity.id,
+                petJpaEntity.name
+            ))
+            .from(petInitiatedLetter)
+            .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
+            .where(
+                petInitiatedLetter.shareLink.eq(shareLink)
+            )
+            .fetchOne();
     }
 }

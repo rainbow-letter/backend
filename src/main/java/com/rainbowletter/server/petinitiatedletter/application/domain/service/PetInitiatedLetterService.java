@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -91,5 +92,10 @@ public class PetInitiatedLetterService {
     private PetInitiatedLetter getPetInitiatedLetter(Long letterId) {
         return petInitiatedLetterJpaRepository.findById(letterId)
             .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
+    }
+
+    @Transactional(readOnly = true)
+    public PetInitiatedLetterWithPetNameResponse getLetterByShareLink(UUID shareLink) {
+        return petInitiatedLetterPersistenceAdapter.getLetterByShareLink(shareLink);
     }
 }

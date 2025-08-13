@@ -73,6 +73,7 @@ class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(convertUriToPathMatcher(AnonymousAllowUri.values())).anonymous()
                         .requestMatchers(convertUriToPathMatcher(AdminAllowUri.values())).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/letters/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/pet-initiated-letters/**").permitAll()
                     .requestMatchers(PERMIT_PATHS).permitAll()
                         .anyRequest().authenticated()
         );

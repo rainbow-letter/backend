@@ -10,6 +10,7 @@ public enum AccessAllowUri implements AllowUri {
     GET_FAQS("/api/faqs"),
     GET_IMAGES("/api/images/resources/**"),
     SHARE_LETTER("/api/letters/share/**"),
+    SHARE_PET_INITIATED_LETTER("/api/pet-initiated-letters/share/**"),
     LOG_USER_AGENT("/api/data/**"),
     ;
 
