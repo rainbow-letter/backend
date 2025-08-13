@@ -1,12 +1,11 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 
-import com.rainbowletter.server.letter.application.domain.model.Letter;
+import com.rainbowletter.server.common.config.ClientConfig;
+import com.rainbowletter.server.notification.application.domain.model.alimtalk.AlimTalkButton;
 import com.rainbowletter.server.notification.application.domain.model.mail.MailTemplateCode;
-import com.rainbowletter.server.notification.application.port.in.GetMailTemplateUseCase;
+import com.rainbowletter.server.notification.application.port.in.*;
+import com.rainbowletter.server.notification.application.port.in.GetAlimTalkTemplateUseCase.GetAlimTalkTemplateQuery;
 import com.rainbowletter.server.notification.application.port.in.GetMailTemplateUseCase.GetMailTemplateQuery;
-import com.rainbowletter.server.notification.application.port.in.SendMailCommand;
-import com.rainbowletter.server.notification.application.port.in.SendMailUseCase;
-import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.in.dto.PetSummary;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
@@ -17,18 +16,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.util.StringUtils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import static com.rainbowletter.server.notification.application.domain.model.alimtalk.AlimTalkTemplateCode.PET_INITIATED_LETTER;
 
 @Service
 @RequiredArgsConstructor
 public class SendNotificationToPetInitiatedLetterEventHandler {
+    private static final Pattern EMOJI_PATTERN = Pattern.compile("[\\p{So}\\p{Cn}]");
+
+    private final ClientConfig clientConfig;
 
     private final LoadUserPort loadUserPort;
     private final LoadPetPort loadPetPort;
 
     private final SendMailUseCase sendMailUseCase;
     private final GetMailTemplateUseCase getMailTemplateUseCase;
+
+    private final SendAlimTalkUseCase sendAlimTalkUseCase;
+    private final GetAlimTalkTemplateUseCase getAlimTalkTemplateUseCase;
 
     @Async
     @TransactionalEventListener
@@ -37,7 +47,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
         User user = loadUserPort.loadUserById(new User.UserId(letter.getUserId()));
         PetSummary pet = loadPetPort.findPetSummaryById(letter.getPetId(), letter.getUserId());
 
-//        sendAlimTalk(user, pet, letter);
+        sendAlimTalk(user, pet, letter);
         sendMail(user, pet, letter);
     }
 
@@ -45,7 +55,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
         GetMailTemplateQuery titleQuery = GetMailTemplateQuery.titleQuery(MailTemplateCode.PET_INITIATED_LETTER, pet.name());
         String title = getMailTemplateUseCase.getTitle(titleQuery);
 
-        final var contentQuery = GetMailTemplateQuery.contentQuery(
+        GetMailTemplateQuery contentQuery = GetMailTemplateQuery.contentQuery(
             MailTemplateCode.PET_INITIATED_LETTER,
             user.getEmail(),
             List.of(
@@ -53,10 +63,60 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
                 pet.name()
             )
         );
-        final String content = getMailTemplateUseCase.getContent(contentQuery);
+        String content = getMailTemplateUseCase.getContent(contentQuery);
 
-        final SendMailCommand command = new SendMailCommand(user.getEmail(), "SERVER", title, content);
+        SendMailCommand command = new SendMailCommand(user.getEmail(), "SERVER", title, content);
         sendMailUseCase.sendMail(command);
+    }
+
+    private void sendAlimTalk(User user, PetSummary pet, PetInitiatedLetter letter) {
+        if (!StringUtils.hasText(user.getPhoneNumber())) {
+            return;
+        }
+
+        GetAlimTalkTemplateQuery titleQuery = new GetAlimTalkTemplateQuery(PET_INITIATED_LETTER, List.of());
+        String title = getAlimTalkTemplateUseCase.getSubject(titleQuery);
+
+        String petName = EMOJI_PATTERN.matcher(pet.name()).replaceAll("");
+
+        GetAlimTalkTemplateQuery contentQuery = new GetAlimTalkTemplateQuery(
+            PET_INITIATED_LETTER,
+            List.of(
+                petName,
+                pet.owner(),
+                letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                petName
+            )
+        );
+        String content = getAlimTalkTemplateUseCase.getContent(contentQuery);
+
+        GetAlimTalkTemplateQuery failTitleQuery = new GetAlimTalkTemplateQuery(PET_INITIATED_LETTER, List.of());
+        String failTitle = getAlimTalkTemplateUseCase.failSubject(failTitleQuery);
+
+        GetAlimTalkTemplateQuery failContentQuery = new GetAlimTalkTemplateQuery(
+            PET_INITIATED_LETTER,
+            List.of(letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), petName)
+        );
+        String failContent = getAlimTalkTemplateUseCase.failContent(failContentQuery);
+
+        GetAlimTalkTemplateQuery buttonQuery = new GetAlimTalkTemplateQuery(
+            PET_INITIATED_LETTER,
+            List.of(clientConfig.getBaseUrl() + "/share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck")
+        );
+        List<AlimTalkButton> buttons = getAlimTalkTemplateUseCase.getButtons(buttonQuery);
+
+        SendAlimTalkCommand command = new SendAlimTalkCommand(
+            user.getPhoneNumber(),
+            "SERVER",
+            PET_INITIATED_LETTER,
+            false,
+            title,
+            content,
+            failTitle,
+            failContent,
+            buttons
+        );
+        sendAlimTalkUseCase.sendAlimTalk(command);
     }
 
 }
