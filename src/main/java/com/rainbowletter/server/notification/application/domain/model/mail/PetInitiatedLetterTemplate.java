@@ -5,6 +5,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.spring6.ISpringTemplateEngine;
 
+import static com.rainbowletter.server.notification.application.domain.model.mail.MailTemplateCode.PET_INITIATED_LETTER;
+
 @Component
 class PetInitiatedLetterTemplate extends AbstractSurveyMailTemplate {
 
@@ -13,7 +15,7 @@ class PetInitiatedLetterTemplate extends AbstractSurveyMailTemplate {
         MessageSource messageSource,
         ISpringTemplateEngine templateEngine
     ) {
-        super(MailTemplateCode.PET_INITIATED_LETTER, clientConfig, messageSource, templateEngine);
+        super(PET_INITIATED_LETTER, clientConfig, messageSource, templateEngine);
     }
 
     @Override
