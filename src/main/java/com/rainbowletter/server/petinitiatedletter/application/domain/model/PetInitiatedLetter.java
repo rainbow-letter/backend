@@ -38,23 +38,18 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID shareLink;
 
-    @NotNull
     @Column(length = 20)
     private String summary;
 
-    @NotNull
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @NotNull
     @Column(columnDefinition = "TEXT")
     private String promptA;
 
-    @NotNull
     @Column(columnDefinition = "TEXT")
     private String promptB;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private PromptType promptType;
 
@@ -85,6 +80,7 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
         this.promptA = generatedLetterContent.promptA();
         this.promptB = generatedLetterContent.promptB();
         this.promptType = generatedLetterContent.selectedPrompt();
+        this.status = PetInitiatedLetterStatus.READY_TO_SEND;
     }
 
     public void submit(final LocalDateTime submitTime) {
