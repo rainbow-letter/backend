@@ -35,6 +35,9 @@ public class UserPetLetterSettingService {
         validateNotInRestrictedTime(email, LocalDateTime.now());
         final User user = loadUserPort.loadUserByEmail(email);
         user.updatePetInitiatedLetterEnabled(request.enabled());
+        if (!request.enabled()) {
+            userPetInitiatedLetterJpaRepository.deleteByUserId(user.getId().value());
+        }
         updateUserStatePort.updateUser(user);
     }
 
