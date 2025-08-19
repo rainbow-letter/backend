@@ -36,6 +36,8 @@ public class GeneratePetInitiatedLetterEventHandler {
             GeneratedLetterContent generatedLetterContent = petInitiatedLetterGenerator.generate(pet);
 
             letter.generate(generatedLetterContent);
+
+            petInitiatedLetterJpaRepository.save(letter);
         }
     }
 
