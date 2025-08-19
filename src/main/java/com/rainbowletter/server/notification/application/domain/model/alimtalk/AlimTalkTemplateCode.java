@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AlimTalkTemplateCode {
     REPLY("TX_0503"),
-    PET_INITIATED_LETTER("TX_0000"),
+    PET_INITIATED_LETTER("UB_6127"),
     ;
 
     private final String code;
