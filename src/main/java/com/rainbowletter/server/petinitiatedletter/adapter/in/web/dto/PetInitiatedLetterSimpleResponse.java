@@ -6,6 +6,7 @@ public record PetInitiatedLetterSimpleResponse(
     Long id,
     LocalDateTime createdAt,
     String summary,
-    String content
+    String content,
+    boolean readStatus
 ) {
 }
