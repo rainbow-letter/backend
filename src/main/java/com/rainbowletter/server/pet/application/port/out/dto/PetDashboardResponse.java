@@ -6,7 +6,6 @@ public record PetDashboardResponse(
     Long id,
     String name,
     Long letterCount,
-    int favoriteCount,
     String image,
     LocalDate deathAnniversary
 ) {

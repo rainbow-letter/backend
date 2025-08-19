@@ -1,13 +1,13 @@
 package com.rainbowletter.server.medium.snippet;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.snippet.Snippet;
+
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.snippet.Snippet;
 
 public class PetResponseSnippet {
 
@@ -38,21 +38,6 @@ public class PetResponseSnippet {
 					.type(JsonFieldType.STRING)
 					.description("이미지의 objectKey")
 					.optional(),
-			fieldWithPath("pets[].favorite.id")
-					.type(JsonFieldType.NUMBER)
-					.description("좋아요 ID"),
-			fieldWithPath("pets[].favorite.total")
-					.type(JsonFieldType.NUMBER)
-					.description("총 좋아요 수"),
-			fieldWithPath("pets[].favorite.dayIncreaseCount")
-					.type(JsonFieldType.NUMBER)
-					.description("하루동안 증가된 좋아요 수"),
-			fieldWithPath("pets[].favorite.canIncrease")
-					.type(JsonFieldType.BOOLEAN)
-					.description("오늘 하루 좋아요 가능 여부"),
-			fieldWithPath("pets[].favorite.lastIncreasedAt")
-					.type(JsonFieldType.STRING)
-					.description("마지막 좋아요 증가일"),
 			fieldWithPath("pets[].createdAt")
 					.type(JsonFieldType.STRING)
 					.description("생성일"),
@@ -88,21 +73,6 @@ public class PetResponseSnippet {
 					.type(JsonFieldType.STRING)
 					.description("이미지의 objectKey")
 					.optional(),
-			fieldWithPath("favorite.id")
-					.type(JsonFieldType.NUMBER)
-					.description("좋아요 ID"),
-			fieldWithPath("favorite.total")
-					.type(JsonFieldType.NUMBER)
-					.description("총 좋아요 수"),
-			fieldWithPath("favorite.dayIncreaseCount")
-					.type(JsonFieldType.NUMBER)
-					.description("하루동안 증가된 좋아요 수"),
-			fieldWithPath("favorite.canIncrease")
-					.type(JsonFieldType.BOOLEAN)
-					.description("오늘 하루 좋아요 가능 여부"),
-			fieldWithPath("favorite.lastIncreasedAt")
-					.type(JsonFieldType.STRING)
-					.description("마지막 좋아요 증가일"),
 			fieldWithPath("createdAt")
 					.type(JsonFieldType.STRING)
 					.description("생성일"),
@@ -121,9 +91,6 @@ public class PetResponseSnippet {
 			fieldWithPath("pets[].letterCount")
 					.type(JsonFieldType.NUMBER)
 					.description("보낸 편지 수"),
-			fieldWithPath("pets[].favoriteCount")
-					.type(JsonFieldType.NUMBER)
-					.description("총 좋아요 수"),
 			fieldWithPath("pets[].image")
 					.type(JsonFieldType.STRING)
 					.description("이미지의 objectKey")

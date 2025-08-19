@@ -24,7 +24,7 @@ import static com.rainbowletter.server.user.adapter.out.persistence.QUserJpaEnti
 @PersistenceAdapter
 @RequiredArgsConstructor
 class PetPersistenceAdapter implements CreatePetPort, LoadPetPort, LoadPetDashboardPort,
-        ResetFavoriteStatePort, UpdatePetStatePort, DeletePetPort {
+        UpdatePetStatePort, DeletePetPort {
 
     private final JPAQueryFactory queryFactory;
     private final PetMapper petMapper;
@@ -38,14 +38,6 @@ class PetPersistenceAdapter implements CreatePetPort, LoadPetPort, LoadPetDashbo
     @Override
     public Pet createPet(final Pet pet) {
         return save(pet);
-    }
-
-    @Override
-    public void resetFavorite() {
-        queryFactory.update(petJpaEntity)
-                .set(petJpaEntity.favoriteJpaEntity.canIncrease, true)
-                .set(petJpaEntity.favoriteJpaEntity.dayIncreaseCount, 0)
-                .execute();
     }
 
     @Override
@@ -121,7 +113,6 @@ class PetPersistenceAdapter implements CreatePetPort, LoadPetPort, LoadPetDashbo
                         petJpaEntity.id,
                         petJpaEntity.name,
                         letterJpaEntity.count().as("letterCount"),
-                        petJpaEntity.favoriteJpaEntity.total.as("favoriteCount"),
                         petJpaEntity.image,
                         petJpaEntity.deathAnniversary
                 ))
