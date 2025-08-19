@@ -36,7 +36,8 @@ public class PetInitiatedLetterPersistenceAdapter {
                 petInitiatedLetter.id,
                 petInitiatedLetter.createdAt,
                 petInitiatedLetter.summary,
-                petInitiatedLetter.content
+                petInitiatedLetter.content,
+                petInitiatedLetter.readStatus
             ))
             .from(petInitiatedLetter)
             .where(
