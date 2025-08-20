@@ -70,10 +70,6 @@ public class PetInitiatedLetterService {
     public void regeneratePetInitiatedLetter(Long letterId) {
         PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
 
-        if (!letter.getStatus().equals(PetInitiatedLetterStatus.READY_TO_SEND)) {
-            throw new RainbowLetterException("발송 대기 상태인 선편지만 재생성이 가능합니다.", "선편지 ID : " + letterId);
-        }
-
         Pet pet = loadPetPort.loadPetByIdAndUserId(new Pet.PetId(letter.getPetId()), new User.UserId(letter.getUserId()));
 
         GeneratedLetterContent generatedLetterContent = petInitiatedLetterGenerator.generate(pet);
