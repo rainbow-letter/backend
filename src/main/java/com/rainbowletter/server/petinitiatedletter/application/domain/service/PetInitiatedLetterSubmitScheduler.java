@@ -28,7 +28,7 @@ public class PetInitiatedLetterSubmitScheduler {
     private final ApplicationEventPublisher eventPublisher;
 
     @Async
-    @Scheduled(cron = "0 0 20 * * MON,WED,FRI")
+    @Scheduled(cron = "0 0 20 * * *")
     @Transactional
     public void submitPetInitiatedLetter() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
