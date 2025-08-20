@@ -28,7 +28,7 @@ public class PetInitiatedLetterRecordCreationScheduler {
     private final LoadSettingPort loadSettingPort;
 
     @Async
-    @Scheduled(cron = "0 30 19 * * MON,WED,FRI")
+    @Scheduled(cron = "0 30 19 * * *")
     @Transactional
     public void createPetInitiatedLetterRecords() {
         List<UserPetPairDto> userPetPairs = userPetInitiatedLetterPersistenceAdapter.findAllUserPetPairs();
