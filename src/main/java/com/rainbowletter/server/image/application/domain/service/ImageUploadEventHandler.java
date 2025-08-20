@@ -30,7 +30,7 @@ public class ImageUploadEventHandler {
             storageService.uploadFile(webpData, "image/webp", event.filePath());
         } catch (Exception e) {
             log.error("[이벤트 처리 중 이미지 업로드 실패] {}", event.filePath(), e);
-            slackErrorReportService.sendErrorReportToSlack(event.filePath(), e);
+            slackErrorReportService.sendImageUploadErrorReportToSlack(event.filePath(), e);
         }
     }
 

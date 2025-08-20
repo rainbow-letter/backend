@@ -38,4 +38,14 @@ public class SlackMessageFormatter {
         );
     }
 
+    public String formatGeneratePetLetterErrorReport(Long letterId, Throwable exception) {
+        String reason = exception.getMessage() != null ? exception.getMessage() : "알 수 없는 에러";
+
+        return String.join("\n",
+            "❌ *선편지 AI 생성 실패*",
+            "- 선편지 ID : `" + letterId + "`",
+            "- 사유: " + reason
+        );
+    }
+
 }
