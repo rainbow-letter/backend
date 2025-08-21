@@ -4,6 +4,8 @@ import com.rainbowletter.server.common.application.domain.exception.RainbowLette
 import com.rainbowletter.server.letter.application.domain.model.Letter;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,42 +15,50 @@ public enum Parameter {
     PET_NAME(Pet.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, Pet.class);
+            validateInstanceType(instance, Pet.class);
             return ((Pet) instance).getName();
         }
     },
     PET_OWNER(Pet.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, Pet.class);
+            validateInstanceType(instance, Pet.class);
             return ((Pet) instance).getOwner();
         }
     },
     PET_SPECIES(Pet.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, Pet.class);
+            validateInstanceType(instance, Pet.class);
             return ((Pet) instance).getSpecies();
+        }
+    },
+    PET_CHARACTER(Pet.class) {
+        @Override
+        public String value(final Object instance) {
+            validateInstanceType(instance, Pet.class);
+            List<String> personalities = ((Pet) instance).getPersonalities();
+            return String.join(", ", personalities);
         }
     },
     LETTER_CONTENT(Letter.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, Letter.class);
+            validateInstanceType(instance, Letter.class);
             return ((Letter) instance).getContent();
         }
     },
     LETTER_COUNT(LetterCount.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, LetterCount.class);
+            validateInstanceType(instance, LetterCount.class);
             return String.valueOf(instance);
         }
     },
     FIRST_LETTER(FirstLetter.class) {
         @Override
         public String value(final Object instance) {
-            Parameter.validateInstanceType(instance, FirstLetter.class);
+            validateInstanceType(instance, FirstLetter.class);
             return String.valueOf(instance);
         }
     };
@@ -70,12 +80,8 @@ public enum Parameter {
 
     public abstract String value(Object instance);
 
-    public record LetterCount(Long count) {
+    public record LetterCount(Long count) { }
 
-    }
-
-    public record FirstLetter(Boolean isFirstLetter) {
-
-    }
+    public record FirstLetter(Boolean isFirstLetter) { }
 
 }
