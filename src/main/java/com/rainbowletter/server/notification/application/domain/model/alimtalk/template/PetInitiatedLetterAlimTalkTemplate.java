@@ -15,7 +15,7 @@ class PetInitiatedLetterAlimTalkTemplate extends AbstractAlimTalkTemplate {
 
     @Override
     public String subject(final Object... args) {
-        return "[무지개편지] 편지 도착 알림";
+        return "[무지개편지] 선편지 도착 알림";
     }
 
     @Override
@@ -25,15 +25,17 @@ class PetInitiatedLetterAlimTalkTemplate extends AbstractAlimTalkTemplate {
 
     @Override
     public String content(final Object... args) {
-        validateTemplateParameters(4, args);
+        validateTemplateParameters(3, args);
         return """
-            [무지개편지] 편지 도착 알림
+            [무지개편지] 편지가 도착했어요!
             \s
             안녕하세요,
             %s %s님!
-            %s, %s에게서 편지가 도착했어요! : )
+            %s이 무지개마을에서 먼저 편지를 보내왔어요 : )
             \s
-            아래 '편지 보러 가기' 버튼을 누르시면 편지함으로 이동합니다.
+            아이가 먼저 보낸 편지를 보러 가실까요?
+            \s
+            * 본 메시지는 고객님이 신청하신 '편지 받아보기'에 대한 안내 메세지입니다.
             """.formatted(args);
     }
 

@@ -84,7 +84,6 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
             List.of(
                 petName,
                 pet.owner(),
-                letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 petName
             )
         );
