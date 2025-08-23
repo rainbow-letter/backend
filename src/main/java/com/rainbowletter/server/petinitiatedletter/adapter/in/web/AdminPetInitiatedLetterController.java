@@ -36,15 +36,15 @@ public class AdminPetInitiatedLetterController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "선편지 상세 조회")
+    @Operation(summary = "관리자 - 선편지 상세 조회")
     @GetMapping("/{letter-id}")
-    public ResponseEntity<PetInitiatedLetterForAdminResponse> getPetInitiatedLetterDetail(
+    public ResponseEntity<PetInitiatedLetterForAdminResponse> getPetInitiatedLetterDetailForAdmin(
         @PathVariable("letter-id") Long letterId,
         @RequestParam("user-id") Long userId,
         @RequestParam("pet-id") Long petId
     ) {
         PetInitiatedLetterForAdminResponse response =
-            petInitiatedLetterService.getPetInitiatedLetterDetail(letterId, userId, petId);
+            petInitiatedLetterService.getPetInitiatedLetterDetailForAdmin(letterId, userId, petId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
