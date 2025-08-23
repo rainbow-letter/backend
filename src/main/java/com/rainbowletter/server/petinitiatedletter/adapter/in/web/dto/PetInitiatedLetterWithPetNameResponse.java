@@ -9,6 +9,7 @@ public record PetInitiatedLetterWithPetNameResponse(
     String summary,
     String content,
     Long petId,
-    String petName
+    String petName,
+    String petImage
 ) {
 }
