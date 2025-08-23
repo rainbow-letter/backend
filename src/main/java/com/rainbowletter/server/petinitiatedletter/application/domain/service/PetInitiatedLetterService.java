@@ -9,10 +9,10 @@ import com.rainbowletter.server.petinitiatedletter.adapter.out.infrastructure.Pe
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterPersistenceAdapter;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
-import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.SubmitPetInitiatedLetterEvent;
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import com.rainbowletter.server.user.application.domain.model.User;
+import com.rainbowletter.server.user.application.port.out.LoadUserPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -32,6 +32,7 @@ public class PetInitiatedLetterService {
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
     private final PetInitiatedLetterGenerator petInitiatedLetterGenerator;
     private final LoadPetPort loadPetPort;
+    private final LoadUserPort loadUserPort;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
@@ -43,9 +44,9 @@ public class PetInitiatedLetterService {
     }
 
     @Transactional(readOnly = true)
-    public PetInitiatedLetterForAdminResponse getPetInitiatedLetterDetail(Long letterId, Long userId, Long petId) {
+    public PetInitiatedLetterForAdminResponse getPetInitiatedLetterDetailForAdmin(Long letterId, Long userId, Long petId) {
         PetInitiatedLetterForAdminResponse partialResponse =
-            petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterDetail(letterId, userId, petId);
+            petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterDetailForAdmin(letterId, userId, petId);
 
         List<PetInitiatedLettersForAdminResponse> petInitiatedLetterList =
             petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterListByUserId(userId);
@@ -93,5 +94,11 @@ public class PetInitiatedLetterService {
     @Transactional(readOnly = true)
     public PetInitiatedLetterWithPetNameResponse getLetterByShareLink(UUID shareLink) {
         return petInitiatedLetterPersistenceAdapter.getLetterByShareLink(shareLink);
+    }
+
+    @Transactional(readOnly = true)
+    public PetInitiatedLetterSummary getPetInitiatedLetterDetail(String email, Long letterId) {
+        User user = loadUserPort.loadUserByEmail(email);
+        return petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterDetail(user.getId().value(), letterId);
     }
 }
