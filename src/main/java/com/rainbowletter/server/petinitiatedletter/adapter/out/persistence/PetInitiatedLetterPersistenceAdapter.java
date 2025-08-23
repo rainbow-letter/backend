@@ -187,7 +187,8 @@ public class PetInitiatedLetterPersistenceAdapter {
                 petInitiatedLetter.summary,
                 petInitiatedLetter.content,
                 petJpaEntity.id,
-                petJpaEntity.name
+                petJpaEntity.name,
+                petJpaEntity.image
             ))
             .from(petInitiatedLetter)
             .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
