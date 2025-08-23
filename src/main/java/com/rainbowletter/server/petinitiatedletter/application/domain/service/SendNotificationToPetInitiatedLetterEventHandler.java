@@ -59,7 +59,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
             MailTemplateCode.PET_INITIATED_LETTER,
             user.getEmail(),
             List.of(
-                "/share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck",
+                "/pre-share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck",
                 pet.name()
             )
         );
