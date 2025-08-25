@@ -31,7 +31,7 @@ class PetInitiatedLetterAlimTalkTemplate extends AbstractAlimTalkTemplate {
             \s
             안녕하세요,
             %s %s님!
-            %s이 무지개마을에서 먼저 편지를 보내왔어요 : )
+            %s에게서 먼저 편지가 왔어요 : )
             \s
             아이가 먼저 보낸 편지를 보러 가실까요?
             \s
@@ -43,9 +43,11 @@ class PetInitiatedLetterAlimTalkTemplate extends AbstractAlimTalkTemplate {
     public String failContent(final Object... args) {
         validateTemplateParameters(2, args);
         return """
-            [무지개편지]
+            [무지개편지] 편지가 도착했어요!
             \s
-            %s, %s에게서 편지가 도착했어요! : )
+            안녕하세요,
+            %s %s님!
+            %s에게서 먼저 편지가 왔어요 : )
             \s
             편지함에서 확인해주세요!
             """.formatted(args);

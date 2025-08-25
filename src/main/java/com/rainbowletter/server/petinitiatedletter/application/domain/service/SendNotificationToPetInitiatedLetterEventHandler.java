@@ -100,7 +100,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
 
         GetAlimTalkTemplateQuery buttonQuery = new GetAlimTalkTemplateQuery(
             PET_INITIATED_LETTER,
-            List.of(clientConfig.getBaseUrl() + "/share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck")
+            List.of(clientConfig.getBaseUrl() + "/pre-share/" + letter.getShareLink() + "?utm_source=petinitiatedlettercheck")
         );
         List<AlimTalkButton> buttons = getAlimTalkTemplateUseCase.getButtons(buttonQuery);
 
