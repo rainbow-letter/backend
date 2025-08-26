@@ -41,7 +41,7 @@ class PetInitiatedLetterAlimTalkTemplate extends AbstractAlimTalkTemplate {
 
     @Override
     public String failContent(final Object... args) {
-        validateTemplateParameters(2, args);
+        validateTemplateParameters(3, args);
         return """
             [무지개편지] 편지가 도착했어요!
             \s

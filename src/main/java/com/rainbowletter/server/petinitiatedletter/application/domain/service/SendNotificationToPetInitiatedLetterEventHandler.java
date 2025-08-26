@@ -94,7 +94,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
 
         GetAlimTalkTemplateQuery failContentQuery = new GetAlimTalkTemplateQuery(
             PET_INITIATED_LETTER,
-            List.of(letter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), petName)
+            List.of(petName, pet.owner(), petName)
         );
         String failContent = getAlimTalkTemplateUseCase.failContent(failContentQuery);
 
