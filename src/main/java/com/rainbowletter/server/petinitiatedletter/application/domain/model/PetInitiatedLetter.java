@@ -94,4 +94,8 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
             throw new RainbowLetterException("이미 발송된 편지입니다.", this.getId());
         }
     }
+
+    public void markAsFailed() {
+        this.status = PetInitiatedLetterStatus.SCHEDULED;
+    }
 }
