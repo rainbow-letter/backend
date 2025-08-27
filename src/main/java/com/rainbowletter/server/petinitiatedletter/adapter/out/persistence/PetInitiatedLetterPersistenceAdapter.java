@@ -2,19 +2,24 @@ package com.rainbowletter.server.petinitiatedletter.adapter.out.persistence;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rainbowletter.server.common.annotation.PersistenceAdapter;
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.letter.adapter.in.web.dto.RetrieveLetterRequest;
 import com.rainbowletter.server.pet.application.port.in.dto.PetForAdminResponse;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.*;
+import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus;
+import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.PetInitiatedLetterStats;
 import com.rainbowletter.server.user.application.port.in.dto.UserForAdminResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
@@ -221,5 +226,40 @@ public class PetInitiatedLetterPersistenceAdapter {
         }
 
         return result;
+    }
+
+    public PetInitiatedLetterStats getPetInitiatedLetterReportByCreatedAtBetween(LocalDateTime letterStartTime, LocalDateTime letterEndTime) {
+        PetInitiatedLetterStats result = queryFactory
+            .select(
+                Projections.constructor(
+                    PetInitiatedLetterStats.class,
+                    petInitiatedLetter.id.countDistinct(),
+                    countByCondition(petInitiatedLetter.status.eq(PetInitiatedLetterStatus.SCHEDULED)),
+                    countByCondition(
+                        petInitiatedLetter.status.eq(PetInitiatedLetterStatus.READY_TO_SEND)
+                            .and(petInitiatedLetter.content.isNotNull())
+                    ),
+                    countByCondition(
+                        petInitiatedLetter.status.eq(PetInitiatedLetterStatus.SENT)
+                            .and(petInitiatedLetter.submitTime.isNotNull())
+                    )
+                )
+            )
+            .from(petInitiatedLetter)
+            .where(
+                petInitiatedLetter.createdAt.goe(letterStartTime),
+                petInitiatedLetter.createdAt.lt(letterEndTime)
+            )
+            .fetchOne();
+
+        return result != null ? result : new PetInitiatedLetterStats(0L, 0L, 0L, 0L);
+    }
+
+    private NumberExpression<Long> countByCondition(BooleanExpression condition) {
+        return Expressions.cases()
+            .when(condition).then(1L)
+            .otherwise(0L)
+            .sum()
+            .coalesce(0L);
     }
 }
