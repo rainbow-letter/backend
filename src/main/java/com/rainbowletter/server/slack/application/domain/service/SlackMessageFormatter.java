@@ -1,5 +1,6 @@
 package com.rainbowletter.server.slack.application.domain.service;
 
+import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.PetInitiatedLetterReportResponse;
 import com.rainbowletter.server.slack.application.port.in.dto.LetterReportResponse;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,23 @@ public class SlackMessageFormatter {
             report.inspectionPending(), report.inspectionPendingPercentage(),
             report.replySent(), report.replySentPercentage(),
             report.replyFailed(), report.replyFailedPercentage()
+        );
+    }
+
+    public String formatDailyPetInitiatedLetterReport(PetInitiatedLetterReportResponse report) {
+        return String.format("""
+                🔊 *Daily Pet-Initiated-Letter Report*
+                1. 날짜: %s
+                2. 총 선편지 개수: %d
+                3. 생성예정: %d (%s)
+                4. 발송대기: %d (%s)
+                5. 발송완료: %d (%s)
+                """,
+            report.date(),
+            report.totalLetters(),
+            report.scheduled(), report.scheduledPercentage(),
+            report.readyToSend(), report.readyToSendPercentage(),
+            report.sent(), report.sentPercentage()
         );
     }
 
