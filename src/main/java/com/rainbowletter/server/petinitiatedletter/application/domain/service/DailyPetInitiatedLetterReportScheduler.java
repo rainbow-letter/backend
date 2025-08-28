@@ -18,7 +18,7 @@ public class DailyPetInitiatedLetterReportScheduler {
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
     private final SlackReviewReportService slackReviewReportService;
 
-    @Scheduled(cron = "0 10 20 * * MON,WED,FRI")
+    @Scheduled(cron = "0 20 20 * * MON,WED,FRI")
     public void sendDailyPetInitiatedLetterReport() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = now.withHour(19).withMinute(29).withSecond(0);
