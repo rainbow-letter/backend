@@ -36,4 +36,10 @@ public class SlackErrorReportService {
         sendErrorReportToSlack(message);
     }
 
+    public void sendSubmitPetLetterErrorReportToSlack(Long letterId, Throwable exception) {
+        String message = slackMessageFormatter.formatSubmitPetLetterErrorReport(letterId, exception);
+
+        sendErrorReportToSlack(message);
+    }
+
 }

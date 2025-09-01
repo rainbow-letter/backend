@@ -1,6 +1,5 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 
-import com.rainbowletter.server.common.util.TimeHolder;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.infrastructure.PetInitiatedLetterGenerator;
@@ -11,13 +10,13 @@ import com.rainbowletter.server.slack.application.domain.service.SlackErrorRepor
 import com.rainbowletter.server.user.application.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus.READY_TO_SEND;
 import static com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetterStatus.SCHEDULED;
 
 @Component
@@ -29,8 +28,7 @@ public class PetInitiatedLetterRetryScheduler {
     private final PetInitiatedLetterGenerator petInitiatedLetterGenerator;
     private final LoadPetPort loadPetPort;
     private final SlackErrorReportService slackErrorReportService;
-    private final TimeHolder timeHolder;
-    private final ApplicationEventPublisher eventPublisher;
+    private final PetInitiatedLetterSubmitter submitter;
 
     @Scheduled(cron = "0 5 20 * * *")
     public void regeneratePetInitiatedLetters() {
@@ -64,6 +62,23 @@ public class PetInitiatedLetterRetryScheduler {
             petInitiatedLetterJpaRepository.save(letter);
         }
 
+    }
+
+    @Scheduled(cron = "0 10 20 * * *")
+    public void retrySendPetInitiatedLetters() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
+        LocalDateTime end = now.withHour(20).withMinute(0).withSecond(0);
+
+        List<PetInitiatedLetter> petInitiatedLetters =
+            petInitiatedLetterJpaRepository.findAllByStatusAndCreatedAtBetween(READY_TO_SEND, start, end);
+
+        if (petInitiatedLetters.isEmpty()) {
+            log.info("발송 재시도할 선편지가 없습니다.");
+            return;
+        }
+
+        petInitiatedLetters.forEach(submitter::submit);
     }
 
 }

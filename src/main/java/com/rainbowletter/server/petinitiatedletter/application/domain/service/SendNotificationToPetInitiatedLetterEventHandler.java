@@ -15,10 +15,10 @@ import com.rainbowletter.server.user.application.port.out.LoadUserPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.util.StringUtils;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,7 +41,7 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
     private final GetAlimTalkTemplateUseCase getAlimTalkTemplateUseCase;
 
     @Async
-    @TransactionalEventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSubmitPetInitiatedLetter(SubmitPetInitiatedLetterEvent event) {
         PetInitiatedLetter letter = event.petInitiatedLetter();
         User user = loadUserPort.loadUserById(new User.UserId(letter.getUserId()));
