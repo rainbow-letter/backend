@@ -1,16 +1,11 @@
 package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 
-import com.rainbowletter.server.common.util.TimeHolder;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.persistence.PetInitiatedLetterJpaRepository;
 import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetInitiatedLetter;
-import com.rainbowletter.server.petinitiatedletter.application.domain.model.SubmitPetInitiatedLetterEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,12 +19,9 @@ import static com.rainbowletter.server.petinitiatedletter.application.domain.mod
 public class PetInitiatedLetterSubmitScheduler {
 
     private final PetInitiatedLetterJpaRepository petInitiatedLetterJpaRepository;
-    private final TimeHolder timeHolder;
-    private final ApplicationEventPublisher eventPublisher;
+    private final PetInitiatedLetterSubmitter submitter;
 
-    @Async
     @Scheduled(cron = "0 0 20 * * *")
-    @Transactional
     public void submitPetInitiatedLetter() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
@@ -42,11 +34,7 @@ public class PetInitiatedLetterSubmitScheduler {
             return;
         }
 
-        for (PetInitiatedLetter letter : petInitiatedLetters) {
-            letter.submit(timeHolder.currentTime());
-            eventPublisher.publishEvent(new SubmitPetInitiatedLetterEvent(letter));
-        }
-        petInitiatedLetterJpaRepository.saveAll(petInitiatedLetters);
+        petInitiatedLetters.forEach(submitter::submit);
     }
 
 }
