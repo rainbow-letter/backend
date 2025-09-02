@@ -65,6 +65,7 @@ public class PetInitiatedLetterPersistenceAdapter {
         List<PetInitiatedLetterResponse> letterList = queryFactory.select(Projections.constructor(
                 PetInitiatedLetterResponse.class,
                 petInitiatedLetter.id,
+                petInitiatedLetter.petId,
                 petInitiatedLetter.createdAt,
                 petInitiatedLetter.summary,
                 petInitiatedLetter.content,
