@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public record PetInitiatedLetterResponse(
     Long id,
+    Long petId,
     LocalDateTime createdAt,
     String summary,
     String content,
