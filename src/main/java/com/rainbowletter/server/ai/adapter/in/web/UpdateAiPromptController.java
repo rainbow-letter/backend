@@ -5,6 +5,7 @@ import com.rainbowletter.server.ai.application.domain.model.AiPrompt.AiPromptId;
 import com.rainbowletter.server.ai.application.port.in.UpdateAiPromptCommand;
 import com.rainbowletter.server.ai.application.port.in.UpdateAiPromptUseCase;
 import com.rainbowletter.server.common.annotation.WebAdapter;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admins/ai")
-@Tag(name = "ai")
+@Tag(name = "ai", description = "AI 관련")
 class UpdateAiPromptController {
 
     private final UpdateAiPromptUseCase updateAiPromptUseCase;
 
+    @Operation(summary = "프롬프트 수정")
     @PutMapping("/prompts/{id}")
     void updatePrompt(
         @PathVariable("id") final Long id,

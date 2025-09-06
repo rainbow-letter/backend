@@ -1,20 +1,5 @@
 package com.rainbowletter.server.medium.e2e;
 
-import static com.rainbowletter.server.common.util.Constants.AUTHORIZATION_HEADER_KEY;
-import static com.rainbowletter.server.common.util.Constants.AUTHORIZATION_HEADER_TYPE;
-import static com.rainbowletter.server.medium.RestDocsUtils.getFilter;
-import static com.rainbowletter.server.medium.RestDocsUtils.getSpecification;
-import static com.rainbowletter.server.medium.snippet.CommonRequestSnippet.AUTHORIZATION_HEADER;
-import static com.rainbowletter.server.medium.snippet.PetRequestSnippet.PET_CREATE_REQUEST;
-import static com.rainbowletter.server.medium.snippet.PetRequestSnippet.PET_PATH_VARIABLE_ID;
-import static com.rainbowletter.server.medium.snippet.PetRequestSnippet.PET_UPDATE_REQUEST;
-import static com.rainbowletter.server.medium.snippet.PetResponseSnippet.PET_CREATE_RESPONSE_HEADER;
-import static com.rainbowletter.server.medium.snippet.PetResponseSnippet.PET_DASHBOARD_RESPONSES;
-import static com.rainbowletter.server.medium.snippet.PetResponseSnippet.PET_RESPONSE;
-import static com.rainbowletter.server.medium.snippet.PetResponseSnippet.PET_RESPONSES;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-
 import com.rainbowletter.server.medium.TestHelper;
 import com.rainbowletter.server.pet.adapter.in.web.dto.CreatePetRequest;
 import com.rainbowletter.server.pet.adapter.in.web.dto.UpdatePetRequest;
@@ -24,13 +9,24 @@ import com.rainbowletter.server.pet.application.port.in.dto.PetsResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+
+import static com.rainbowletter.server.common.util.Constants.AUTHORIZATION_HEADER_KEY;
+import static com.rainbowletter.server.common.util.Constants.AUTHORIZATION_HEADER_TYPE;
+import static com.rainbowletter.server.medium.RestDocsUtils.getFilter;
+import static com.rainbowletter.server.medium.RestDocsUtils.getSpecification;
+import static com.rainbowletter.server.medium.snippet.CommonRequestSnippet.AUTHORIZATION_HEADER;
+import static com.rainbowletter.server.medium.snippet.PetRequestSnippet.*;
+import static com.rainbowletter.server.medium.snippet.PetResponseSnippet.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 
 @Sql({"classpath:sql/user.sql", "classpath:sql/pet.sql"})
 class PetE2ETest extends TestHelper {
@@ -54,13 +50,6 @@ class PetE2ETest extends TestHelper {
                 tuple(1L, 1L, "콩이", "고양이", "형아", List.of("활발한", "잘삐짐"), deathAnniversary,
                     "objectKey"),
                 tuple(2L, 1L, "미키", "강아지", "엄마", List.of(), deathAnniversary, null)
-            );
-        assertThat(result.pets())
-            .extracting("favorite")
-            .extracting("id", "total", "dayIncreaseCount", "canIncrease")
-            .contains(
-                tuple(1L, 0, 0, true),
-                tuple(2L, 0, 0, true)
             );
     }
 
@@ -93,10 +82,6 @@ class PetE2ETest extends TestHelper {
         assertThat(result.personalities()).contains("활발한", "잘삐짐");
         assertThat(result.deathAnniversary()).isEqualTo(deathAnniversary);
         assertThat(result.image()).isEqualTo("objectKey");
-        assertThat(result.favorite().id()).isEqualTo(1L);
-        assertThat(result.favorite().total()).isZero();
-        assertThat(result.favorite().dayIncreaseCount()).isZero();
-        assertThat(result.favorite().canIncrease()).isTrue();
     }
 
     private ExtractableResponse<Response> findByIdAndEmail(final String token) {
@@ -163,28 +148,6 @@ class PetE2ETest extends TestHelper {
             .filter(getFilter().document(AUTHORIZATION_HEADER, PET_CREATE_REQUEST,
                 PET_CREATE_RESPONSE_HEADER))
             .when().post("/api/pets")
-            .then().log().all().extract();
-    }
-
-    @Test
-    void Should_PetIncreaseFavorite_When_ValidRequest() {
-        // given
-        final String token = userAccessToken;
-
-        // when
-        final ExtractableResponse<Response> response = increaseFavorite(token);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(200);
-    }
-
-    private ExtractableResponse<Response> increaseFavorite(final String token) {
-        return RestAssured
-            .given(getSpecification()).log().all()
-            .header(AUTHORIZATION_HEADER_KEY, AUTHORIZATION_HEADER_TYPE + " " + token)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .filter(getFilter().document(AUTHORIZATION_HEADER, PET_PATH_VARIABLE_ID))
-            .when().post("/api/pets/favorite/{id}", 1)
             .then().log().all().extract();
     }
 

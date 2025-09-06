@@ -24,4 +24,11 @@ class UpdateAiConfigService implements UpdateAiConfigUseCase {
         updateSettingStatePort.updateConfig(aiSetting);
     }
 
+    @Override
+    public void updatePetInitiatedLetterConfig(UpdateAiConfigCommand command) {
+        final AiSetting aiSetting = loadSettingPort.loadPetInitiatedLetterSetting();
+        aiSetting.update(command.getUseABTest(), command.getSelectPrompt());
+        updateSettingStatePort.updateConfig(aiSetting);
+    }
+
 }

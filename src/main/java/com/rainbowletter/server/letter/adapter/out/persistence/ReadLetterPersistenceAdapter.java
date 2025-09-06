@@ -301,34 +301,6 @@ class ReadLetterPersistenceAdapter implements LoadLetterPort, CountLetterPort {
     }
 
     @Override
-    public Long countByPetIdAndEndDate(Long petId, LocalDateTime endDate) {
-        return queryFactory.select(letterJpaEntity.count())
-            .from(letterJpaEntity)
-            .where(
-                letterJpaEntity.petId.eq(petId),
-                endDate != null ? letterJpaEntity.createdAt.loe(endDate) : null
-            )
-            .fetchOne();
-    }
-
-//    @Override
-//    public List<LetterWithReply> loadRecentLettersAndRepliesByPetId(final PetId petId) {
-//        return queryFactory
-//            .select(Projections.constructor(
-//                LetterWithReply.class,
-//                letterJpaEntity.id,
-//                letterJpaEntity.content,
-//                replyJpaEntity.content
-//            ))
-//            .from(letterJpaEntity)
-//            .leftJoin(replyJpaEntity).on(letterJpaEntity.id.eq(replyJpaEntity.letterId))
-//            .where(letterJpaEntity.petId.eq(petId.value()))
-//            .orderBy(letterJpaEntity.createdAt.desc())
-//            .limit(3)
-//            .fetch();
-//    }
-
-    @Override
     public List<RecentLetterSummary> loadRecentLettersByPetId(final PetId petId,
                                                               final Long currentLetterId,
                                                               final LocalDateTime currentCreatedAt

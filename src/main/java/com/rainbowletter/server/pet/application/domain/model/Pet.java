@@ -16,7 +16,6 @@ public class Pet extends AggregateRoot {
 
     private final PetId id;
     private final UserId userId;
-    private final Favorite favorite;
 
     private String name;
     private String species;
@@ -36,14 +35,12 @@ public class Pet extends AggregateRoot {
         final String image,
         final List<String> personalities,
         final LocalDate deathAnniversary,
-        final LocalDateTime lastIncreasedAt,
         final LocalDateTime createdAt,
         final LocalDateTime updatedAt
     ) {
         return new Pet(
             null,
             userId,
-            Favorite.withoutId(0, 0, true, lastIncreasedAt),
             name,
             species,
             owner,
@@ -59,7 +56,6 @@ public class Pet extends AggregateRoot {
     public static Pet withId(
         final PetId id,
         final UserId userId,
-        final Favorite favorite,
         final String name,
         final String species,
         final String owner,
@@ -72,7 +68,6 @@ public class Pet extends AggregateRoot {
         return new Pet(
             id,
             userId,
-            favorite,
             name,
             species,
             owner,
@@ -98,10 +93,6 @@ public class Pet extends AggregateRoot {
         this.image = image;
         this.personalities = personalities;
         this.deathAnniversary = deathAnniversary;
-    }
-
-    public void increaseFavorite(final LocalDateTime lastIncreasedAt) {
-        favorite.increase(lastIncreasedAt);
     }
 
     public boolean hasImage() {

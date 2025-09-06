@@ -3,12 +3,13 @@ package com.rainbowletter.server.letter.application.domain.model;
 import com.rainbowletter.server.common.application.domain.model.AggregateRoot;
 import com.rainbowletter.server.pet.application.domain.model.Pet.PetId;
 import com.rainbowletter.server.user.application.domain.model.User.UserId;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -100,8 +101,12 @@ public class Letter extends AggregateRoot {
         registerEvent(new DeleteLetterEvent(this));
     }
 
+    public void read() {
+        this.status = LetterStatus.READ;
+    }
+
     public enum LetterStatus {
-        REQUEST, RESPONSE,
+        REQUEST, RESPONSE, READ
     }
 
     public record LetterId(Long value) {

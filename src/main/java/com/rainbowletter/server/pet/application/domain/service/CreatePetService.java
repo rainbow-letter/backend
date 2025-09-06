@@ -32,7 +32,6 @@ class CreatePetService implements CreatePetUseCase {
             command.getPersonalities(),
             command.getDeathAnniversary(),
             currentTime,
-            currentTime,
             currentTime
         );
         return createPetPort.createPet(pet)

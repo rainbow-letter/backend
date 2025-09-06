@@ -3,6 +3,7 @@ package com.rainbowletter.server.user.application.port.in.dto;
 import com.rainbowletter.server.user.application.domain.model.OAuthProvider;
 import com.rainbowletter.server.user.application.domain.model.User;
 import com.rainbowletter.server.user.application.domain.model.User.UserRole;
+
 import java.time.LocalDateTime;
 
 public record UserInformationResponse(
@@ -13,7 +14,8 @@ public record UserInformationResponse(
     OAuthProvider provider,
     LocalDateTime lastLoggedIn,
     LocalDateTime lastChangedPassword,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    boolean isPetInitiatedLetterEnabled
 ) {
 
     public static UserInformationResponse from(final User user) {
@@ -25,7 +27,8 @@ public record UserInformationResponse(
             user.getProvider(),
             user.getLastLoggedIn(),
             user.getLastChangedPassword(),
-            user.getCreatedAt()
+            user.getCreatedAt(),
+            user.isPetInitiatedLetterEnabled()
         );
     }
 

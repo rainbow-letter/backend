@@ -6,4 +6,6 @@ public interface GetAiSettingUseCase {
 
     AiSettingResponse getSetting();
 
+    AiSettingResponse getPetInitiatedLetterSetting();
+
 }

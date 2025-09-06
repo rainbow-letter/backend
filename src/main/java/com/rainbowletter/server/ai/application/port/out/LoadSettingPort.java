@@ -10,6 +10,8 @@ public interface LoadSettingPort {
 
     AiSetting loadSetting();
 
+    AiSetting loadPetInitiatedLetterSetting();
+
     AiPrompt loadPrompt(AiPromptId id);
 
     AiOption loadOption(AiOptionId id);

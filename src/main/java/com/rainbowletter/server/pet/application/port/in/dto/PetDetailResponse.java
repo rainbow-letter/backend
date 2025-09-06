@@ -1,11 +1,12 @@
 package com.rainbowletter.server.pet.application.port.in.dto;
 
 import com.rainbowletter.server.pet.application.domain.model.Pet;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record PetExcludeFavoriteResponse(
+public record PetDetailResponse(
     Long id,
     Long userId,
     String name,
@@ -18,8 +19,8 @@ public record PetExcludeFavoriteResponse(
     LocalDateTime updatedAt
 ) {
 
-    public static PetExcludeFavoriteResponse from(final Pet pet) {
-        return new PetExcludeFavoriteResponse(
+    public static PetDetailResponse from(final Pet pet) {
+        return new PetDetailResponse(
             pet.getId().value(),
             pet.getUserId().value(),
             pet.getName(),

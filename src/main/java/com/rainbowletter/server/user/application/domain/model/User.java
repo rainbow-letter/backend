@@ -23,6 +23,7 @@ public class User extends AggregateRoot {
     private LocalDateTime lastChangedPassword;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean petInitiatedLetterEnabled;
 
     @SuppressWarnings("java:S107")
     public static User withId(
@@ -37,7 +38,8 @@ public class User extends AggregateRoot {
         final LocalDateTime lastLoggedIn,
         final LocalDateTime lastChangedPassword,
         final LocalDateTime createdAt,
-        final LocalDateTime updatedAt
+        final LocalDateTime updatedAt,
+        final boolean petInitiatedLetterEnabled
     ) {
         return new User(
             id,
@@ -51,7 +53,8 @@ public class User extends AggregateRoot {
             lastLoggedIn,
             lastChangedPassword,
             createdAt,
-            updatedAt
+            updatedAt,
+            petInitiatedLetterEnabled
         );
     }
 
@@ -67,7 +70,8 @@ public class User extends AggregateRoot {
         final LocalDateTime lastLoggedIn,
         final LocalDateTime lastChangedPassword,
         final LocalDateTime createdAt,
-        final LocalDateTime updatedAt
+        final LocalDateTime updatedAt,
+        final boolean petInitiatedLetterEnabled
     ) {
         return new User(
             null,
@@ -81,7 +85,8 @@ public class User extends AggregateRoot {
             lastLoggedIn,
             lastChangedPassword,
             createdAt,
-            updatedAt
+            updatedAt,
+            petInitiatedLetterEnabled
         );
     }
 
@@ -114,6 +119,10 @@ public class User extends AggregateRoot {
 
     public void updatePhoneNumber(final String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePetInitiatedLetterEnabled(final boolean enabled) {
+        this.petInitiatedLetterEnabled = enabled;
     }
 
     public void leave() {

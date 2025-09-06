@@ -15,7 +15,6 @@ import com.rainbowletter.server.reply.application.domain.model.Reply.ReplyStatus
 import com.rainbowletter.server.reply.application.port.out.GenerateReplyCommand;
 import com.rainbowletter.server.reply.application.port.out.GenerateReplyPort;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 class ReplyGenerator implements GenerateReplyPort {
 
     private final LoadLetterPort loadLetterPort;
@@ -83,9 +81,6 @@ class ReplyGenerator implements GenerateReplyPort {
     }
 
     private String getResponseContent(final AiPrompt aiPrompt, final GenerateReplyCommand command) {
-        String dynamicSystem = buildDynamicSystemPrompt(aiPrompt.getSystem(), command.getPet());
-        AiPrompt modifiedPrompt = aiPrompt.withSystem(dynamicSystem);
-
         List<Object> parameterInstances = List.of(
             command.getPet(),
             command.getLetter(),
@@ -99,29 +94,12 @@ class ReplyGenerator implements GenerateReplyPort {
             command.getLetter().getCreatedAt()
         );
 
-        System.out.println(recentLetters);
-
-        final AiClientCommand aiClientCommand = new AiClientCommand(modifiedPrompt, parameterInstances, recentLetters);
-
-        log.info(aiClientCommand.toString());
+        final AiClientCommand aiClientCommand = new AiClientCommand(aiPrompt, parameterInstances, recentLetters);
 
         return callAiClientPort.call(aiClientCommand)
             .getResult()
             .getOutput()
             .getContent();
     }
-
-    private String buildDynamicSystemPrompt(String baseSystem, Pet pet) {
-        List<String> personalities = pet.getPersonalities();
-
-        if (personalities == null || personalities.isEmpty()) {
-            return baseSystem;
-        }
-
-        String joined = String.join(", ", personalities);
-        return baseSystem + "\n\n" +
-            pet.getName() + "은 " + joined + " 성격을 가지고 있어. 이런 성격이 드러나게끔 반영하여 답장을 써줘.";
-    }
-
 
 }

@@ -9,8 +9,10 @@ import com.rainbowletter.server.ai.application.port.out.LoadSettingPort;
 import com.rainbowletter.server.ai.application.port.out.UpdateSettingStatePort;
 import com.rainbowletter.server.common.annotation.PersistenceAdapter;
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -26,14 +28,22 @@ class AiSettingPersistenceAdapter implements LoadSettingPort, UpdateSettingState
         final AiConfigJpaEntity aiConfig = aiConfigJpaRepository.findById(1L)
             .orElseThrow(() -> new RainbowLetterException("not.exists.ai.setting"));
 
-        final List<AiPromptJpaEntity> aiPromptJpaEntities = aiPromptJpaRepository.findAll();
-        if (aiPromptJpaEntities.isEmpty()) {
-            throw new RainbowLetterException("not.exists.ai.prompt");
-        }
-
-        final List<AiPrompt> prompts = aiPromptJpaEntities.stream()
-            .map(aiPromptJpaEntity -> loadPrompt(new AiPromptId(aiPromptJpaEntity.getId())))
+        List<AiPrompt> prompts = Stream.of(1L, 2L)
+            .map(id -> loadPrompt(new AiPromptId(id)))
             .toList();
+
+        return aiSettingMapper.mapToDomain(aiConfig, prompts);
+    }
+
+    @Override
+    public AiSetting loadPetInitiatedLetterSetting() {
+        final AiConfigJpaEntity aiConfig = aiConfigJpaRepository.findById(2L)
+            .orElseThrow(() -> new RainbowLetterException("not.exists.ai.letter.setting"));
+
+        List<AiPrompt> prompts = Stream.of(3L, 4L)
+            .map(id -> loadPrompt(new AiPromptId(id)))
+            .toList();
+
         return aiSettingMapper.mapToDomain(aiConfig, prompts);
     }
 
