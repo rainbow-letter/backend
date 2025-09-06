@@ -30,7 +30,7 @@ public class PetInitiatedLetterRetryScheduler {
     private final SlackErrorReportService slackErrorReportService;
     private final PetInitiatedLetterSubmitter submitter;
 
-    @Scheduled(cron = "0 5 20 * * *")
+    @Scheduled(cron = "0 5 20 * * MON,WED,FRI")
     public void regeneratePetInitiatedLetters() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
