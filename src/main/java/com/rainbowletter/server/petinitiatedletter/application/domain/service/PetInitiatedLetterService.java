@@ -3,6 +3,7 @@ package com.rainbowletter.server.petinitiatedletter.application.domain.service;
 import com.rainbowletter.server.common.application.domain.exception.RainbowLetterException;
 import com.rainbowletter.server.common.util.TimeHolder;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
+import com.rainbowletter.server.pet.application.port.in.dto.PetSimpleSummary;
 import com.rainbowletter.server.pet.application.port.out.LoadPetPort;
 import com.rainbowletter.server.petinitiatedletter.adapter.in.web.dto.*;
 import com.rainbowletter.server.petinitiatedletter.adapter.out.infrastructure.PetInitiatedLetterGenerator;
@@ -96,9 +97,26 @@ public class PetInitiatedLetterService {
         return petInitiatedLetterPersistenceAdapter.getLetterByShareLink(shareLink);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PetInitiatedLetterSummary getPetInitiatedLetterDetail(String email, Long letterId) {
         User user = loadUserPort.loadUserByEmail(email);
-        return petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterDetail(user.getId().value(), letterId);
+        PetInitiatedLetter letter = getPetInitiatedLetter(letterId);
+
+        if (!letter.getUserId().equals(user.getId().value())) {
+            throw new RainbowLetterException("자신의 선편지만 조회할 수 있습니다.");
+        } else if (!letter.isReadStatus()) {
+            letter.readLetter();
+        }
+
+        PetSimpleSummary pet = loadPetPort.loadPetSimpleSummary(letter.getPetId());
+
+        return new PetInitiatedLetterSummary(
+            letter.getId(),
+            letter.getCreatedAt(),
+            letter.getContent(),
+            pet.id(),
+            pet.name(),
+            pet.image()
+        );
     }
 }

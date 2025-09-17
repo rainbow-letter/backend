@@ -98,4 +98,8 @@ public class PetInitiatedLetter extends BaseTimeJpaEntity {
     public void markAsFailed() {
         this.status = PetInitiatedLetterStatus.SCHEDULED;
     }
+
+    public void readLetter() {
+        this.readStatus = true;
+    }
 }
