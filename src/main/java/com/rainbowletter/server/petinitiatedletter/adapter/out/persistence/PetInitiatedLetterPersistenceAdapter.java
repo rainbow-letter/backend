@@ -204,31 +204,6 @@ public class PetInitiatedLetterPersistenceAdapter {
             .fetchOne();
     }
 
-    public PetInitiatedLetterSummary getPetInitiatedLetterDetail(Long userId, Long letterId) {
-        PetInitiatedLetterSummary result = queryFactory.select(Projections.constructor(
-                PetInitiatedLetterSummary.class,
-                petInitiatedLetter.id,
-                petInitiatedLetter.createdAt,
-                petInitiatedLetter.content,
-                petJpaEntity.id,
-                petJpaEntity.name,
-                petJpaEntity.image
-            ))
-            .from(petInitiatedLetter)
-            .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
-            .where(
-                petInitiatedLetter.id.eq(letterId),
-                petInitiatedLetter.userId.eq(userId)
-            )
-            .fetchOne();
-
-        if (result == null) {
-            throw new RainbowLetterException("자신의 선편지만 조회할 수 있습니다.");
-        }
-
-        return result;
-    }
-
     public PetInitiatedLetterStats getPetInitiatedLetterReportByCreatedAtBetween(LocalDateTime letterStartTime, LocalDateTime letterEndTime) {
         PetInitiatedLetterStats result = queryFactory
             .select(

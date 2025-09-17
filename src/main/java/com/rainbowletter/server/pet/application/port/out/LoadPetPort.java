@@ -3,6 +3,7 @@ package com.rainbowletter.server.pet.application.port.out;
 import com.rainbowletter.server.letter.application.domain.model.Letter.LetterId;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.domain.model.Pet.PetId;
+import com.rainbowletter.server.pet.application.port.in.dto.PetSimpleSummary;
 import com.rainbowletter.server.pet.application.port.in.dto.PetSummary;
 import com.rainbowletter.server.user.application.domain.model.User.UserId;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface LoadPetPort {
     List<Pet> loadPetsByUserId(UserId userId);
 
     PetSummary findPetSummaryById(Long petId, Long userId);
+
+    PetSimpleSummary loadPetSimpleSummary(Long petId);
 }

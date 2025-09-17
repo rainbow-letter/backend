@@ -7,6 +7,7 @@ import com.rainbowletter.server.common.application.domain.exception.RainbowLette
 import com.rainbowletter.server.letter.application.domain.model.Letter.LetterId;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.pet.application.domain.model.Pet.PetId;
+import com.rainbowletter.server.pet.application.port.in.dto.PetSimpleSummary;
 import com.rainbowletter.server.pet.application.port.in.dto.PetSummary;
 import com.rainbowletter.server.pet.application.port.out.*;
 import com.rainbowletter.server.pet.application.port.out.dto.PetDashboardResponse;
@@ -143,6 +144,19 @@ class PetPersistenceAdapter implements CreatePetPort, LoadPetPort, LoadPetDashbo
                         .map(pet -> pet.getId().value())
                         .toList()
         );
+    }
+
+    @Override
+    public PetSimpleSummary loadPetSimpleSummary(Long petId) {
+        return queryFactory.select(Projections.constructor(
+            PetSimpleSummary.class,
+            petJpaEntity.id,
+            petJpaEntity.name,
+            petJpaEntity.image
+        ))
+        .from(petJpaEntity)
+        .where(petJpaEntity.id.eq(petId))
+        .fetchOne();
     }
 
 }
