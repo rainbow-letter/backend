@@ -10,7 +10,6 @@ import com.rainbowletter.server.petinitiatedletter.application.domain.model.PetI
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.UserPetPairDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class PetInitiatedLetterRecordCreationScheduler {
     private final ApplicationEventPublisher eventPublisher;
     private final LoadSettingPort loadSettingPort;
 
-    @Async
+
     @Scheduled(cron = "0 30 19 * * MON,WED,FRI")
     @Transactional
     public void createPetInitiatedLetterRecords() {
