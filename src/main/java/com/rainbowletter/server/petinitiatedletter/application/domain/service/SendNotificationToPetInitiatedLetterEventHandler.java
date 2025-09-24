@@ -13,7 +13,6 @@ import com.rainbowletter.server.petinitiatedletter.application.domain.model.Subm
 import com.rainbowletter.server.user.application.domain.model.User;
 import com.rainbowletter.server.user.application.port.out.LoadUserPort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -40,7 +39,6 @@ public class SendNotificationToPetInitiatedLetterEventHandler {
     private final SendAlimTalkUseCase sendAlimTalkUseCase;
     private final GetAlimTalkTemplateUseCase getAlimTalkTemplateUseCase;
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSubmitPetInitiatedLetter(SubmitPetInitiatedLetterEvent event) {
         PetInitiatedLetter letter = event.petInitiatedLetter();
