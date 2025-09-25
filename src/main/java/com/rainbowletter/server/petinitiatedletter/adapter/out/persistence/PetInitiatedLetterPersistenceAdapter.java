@@ -184,26 +184,6 @@ public class PetInitiatedLetterPersistenceAdapter {
             .fetch();
     }
 
-    public PetInitiatedLetterWithPetNameResponse getLetterByShareLink(UUID shareLink) {
-        return queryFactory.select(Projections.constructor(
-                PetInitiatedLetterWithPetNameResponse.class,
-                petInitiatedLetter.id,
-                petInitiatedLetter.createdAt,
-                petInitiatedLetter.submitTime,
-                petInitiatedLetter.summary,
-                petInitiatedLetter.content,
-                petJpaEntity.id,
-                petJpaEntity.name,
-                petJpaEntity.image
-            ))
-            .from(petInitiatedLetter)
-            .join(petJpaEntity).on(petInitiatedLetter.petId.eq(petJpaEntity.id))
-            .where(
-                petInitiatedLetter.shareLink.eq(shareLink)
-            )
-            .fetchOne();
-    }
-
     public PetInitiatedLetterStats getPetInitiatedLetterReportByCreatedAtBetween(LocalDateTime letterStartTime, LocalDateTime letterEndTime) {
         PetInitiatedLetterStats result = queryFactory
             .select(
