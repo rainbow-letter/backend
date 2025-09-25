@@ -92,9 +92,26 @@ public class PetInitiatedLetterService {
             .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "선편지 ID : " + letterId));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PetInitiatedLetterWithPetNameResponse getLetterByShareLink(UUID shareLink) {
-        return petInitiatedLetterPersistenceAdapter.getLetterByShareLink(shareLink);
+        PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findByShareLink(shareLink)
+            .orElseThrow(() -> new RainbowLetterException("해당 선편지를 찾을 수 없습니다.", "공유링크 : " + shareLink));
+        PetSimpleSummary pet = loadPetPort.loadPetSimpleSummary(letter.getPetId());
+
+        if (!letter.isReadStatus()) {
+            letter.readLetter();
+        }
+
+        return new PetInitiatedLetterWithPetNameResponse(
+            letter.getId(),
+            letter.getCreatedAt(),
+            letter.getSubmitTime(),
+            letter.getSummary(),
+            letter.getContent(),
+            pet.id(),
+            pet.name(),
+            pet.image()
+        );
     }
 
     @Transactional
