@@ -114,7 +114,7 @@ public class UserPetLetterSettingService {
         int minute = now.getMinute();
 
         boolean isBlockedDay = day == DayOfWeek.MONDAY || day == DayOfWeek.WEDNESDAY || day == DayOfWeek.FRIDAY;
-        boolean isBlockedTime = (hour == 19 && minute >= 30) || (hour == 20 && minute == 0);
+        boolean isBlockedTime = (hour == 19) || (hour == 20 && minute == 0);
 
         return isBlockedDay && isBlockedTime;
     }
