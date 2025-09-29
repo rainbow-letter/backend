@@ -11,6 +11,7 @@ import com.rainbowletter.server.user.application.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,11 @@ public class PetInitiatedLetterRetryScheduler {
     private final SlackErrorReportService slackErrorReportService;
     private final PetInitiatedLetterSubmitter submitter;
 
-    @Scheduled(cron = "0 5 20 * * MON,WED,FRI")
+    @Schedules({
+        @Scheduled(cron = "0 5 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 15 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 25 20 * * MON,WED,FRI")
+    })
     public void regeneratePetInitiatedLetters() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
@@ -64,7 +69,11 @@ public class PetInitiatedLetterRetryScheduler {
 
     }
 
-    @Scheduled(cron = "0 10 20 * * *")
+    @Schedules({
+        @Scheduled(cron = "0 10 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 20 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 30 20 * * MON,WED,FRI")
+    })
     public void retrySendPetInitiatedLetters() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
