@@ -9,6 +9,7 @@ import com.rainbowletter.server.ai.application.port.out.LoadSettingPort;
 import com.rainbowletter.server.pet.application.domain.model.Pet;
 import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.GeneratedLetterContent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PetInitiatedLetterGenerator {
 
     private final LoadSettingPort loadSettingPort;
@@ -24,6 +26,8 @@ public class PetInitiatedLetterGenerator {
 
     public GeneratedLetterContent generate(Pet pet) {
         final AiSetting aiSetting = loadSettingPort.loadPetInitiatedLetterSetting();
+        Pet.PetId petId = pet.getId();
+        log.info("[편지 작성 메소드 호출] petId={}", petId);
 
         if (Boolean.TRUE.equals(aiSetting.getUseABTest())) {
             final Map<PromptType, String> results = new EnumMap<>(PromptType.class);
@@ -51,11 +55,14 @@ public class PetInitiatedLetterGenerator {
 
         } else {
             AiPrompt selectedPrompt = aiSetting.getSelectedPrompt();
+
+            log.info("[callAiClientPort.call 메소드 호출] petId={}", petId);
             String content = callAiClientPort.call(new AiClientCommand(selectedPrompt, List.of(pet)))
                 .getResult()
                 .getOutput()
                 .getContent();
 
+            log.info("[callAiClientPort.call 메소드 호출 종료] petId={}", petId);
             return new GeneratedLetterContent(
                 content.substring(0, 20),
                 content,
