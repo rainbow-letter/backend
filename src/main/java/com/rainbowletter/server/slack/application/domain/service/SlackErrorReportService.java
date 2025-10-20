@@ -1,5 +1,6 @@
 package com.rainbowletter.server.slack.application.domain.service;
 
+import com.rainbowletter.server.slack.adapter.in.web.dto.ClientErrorRequest;
 import com.rainbowletter.server.slack.adapter.out.SlackErrorClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,4 +43,9 @@ public class SlackErrorReportService {
         sendErrorReportToSlack(message);
     }
 
+    public void reportClientError(ClientErrorRequest request, String email) {
+        String message = slackMessageFormatter.formatClientErrorReport(request.message(), request.url(), email);
+
+        sendErrorReportToSlack(message);
+    }
 }

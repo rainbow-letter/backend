@@ -62,7 +62,7 @@ public class SlackMessageFormatter {
         return String.join("\n",
             "❌ *선편지 AI 생성 실패*",
             "- 선편지 ID : `" + letterId + "`",
-            "- 사유: " + reason
+            "- 사유 : " + reason
         );
     }
 
@@ -72,7 +72,16 @@ public class SlackMessageFormatter {
         return String.join("\n",
             "❌ *선편지 발송 실패*",
             "- 선편지 ID : `" + letterId + "`",
-            "- 사유: " + reason
+            "- 사유 : " + reason
+        );
+    }
+
+    public String formatClientErrorReport(String message, String url, String email) {
+        return String.join("\n",
+            "❌ *클라이언트 에러 전송*",
+            "- 에러 메세지 : `" + message + "`",
+            "- URL : " + url + "'",
+            "- 유저 이메일 : " + email
         );
     }
 
