@@ -27,16 +27,15 @@ public class PetInitiatedLetterGenerator {
     public GeneratedLetterContent generate(Pet pet) {
         final AiSetting aiSetting = loadSettingPort.loadPetInitiatedLetterSetting();
         Pet.PetId petId = pet.getId();
-        log.info("[편지 작성 메소드 호출] petId={}", petId);
+        long threadId = Thread.currentThread().getId();
+
+        log.info("[편지 작성 메소드 호출] petId={}, threadId={}", petId, threadId);
 
         if (Boolean.TRUE.equals(aiSetting.getUseABTest())) {
             final Map<PromptType, String> results = new EnumMap<>(PromptType.class);
 
             for (AiPrompt prompt : aiSetting.getPrompts()) {
-                String content = callAiClientPort.call(new AiClientCommand(prompt, List.of(pet)))
-                    .getResult()
-                    .getOutput()
-                    .getContent();
+                String content = callAiWithLogging(prompt, pet, petId, threadId);
                 results.put(prompt.getType(), content);
             }
 
@@ -56,13 +55,8 @@ public class PetInitiatedLetterGenerator {
         } else {
             AiPrompt selectedPrompt = aiSetting.getSelectedPrompt();
 
-            log.info("[callAiClientPort.call 메소드 호출] petId={}", petId);
-            String content = callAiClientPort.call(new AiClientCommand(selectedPrompt, List.of(pet)))
-                .getResult()
-                .getOutput()
-                .getContent();
+            String content = callAiWithLogging(selectedPrompt, pet, petId, threadId);
 
-            log.info("[callAiClientPort.call 메소드 호출 종료] petId={}", petId);
             return new GeneratedLetterContent(
                 content.substring(0, 20),
                 content,
@@ -71,5 +65,22 @@ public class PetInitiatedLetterGenerator {
                 selectedPrompt.getType()
             );
         }
+    }
+
+    private String callAiWithLogging(AiPrompt prompt, Pet pet, Pet.PetId petId, long threadId) {
+        long start = System.currentTimeMillis();
+        log.info("[OpenAI 호출 시작] petId={}, threadId={}, promptType={}, timestamp={}",
+            petId, threadId, prompt.getType(), start);
+
+        String content = callAiClientPort.call(new AiClientCommand(prompt, List.of(pet)))
+            .getResult()
+            .getOutput()
+            .getContent();
+
+        long end = System.currentTimeMillis();
+        log.info("[OpenAI 응답 완료] petId={}, threadId={}, promptType={}, duration={}ms",
+            petId, threadId, prompt.getType(), (end - start));
+
+        return content;
     }
 }
