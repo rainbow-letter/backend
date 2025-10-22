@@ -32,9 +32,9 @@ public class PetInitiatedLetterRetryScheduler {
     private final PetInitiatedLetterSubmitter submitter;
 
     @Schedules({
-        @Scheduled(cron = "0 5 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 15 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 25 20 * * MON,WED,FRI")
+        @Scheduled(cron = "0 55 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 5 21 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 15 21 * * MON,WED,FRI")
     })
     public void regeneratePetInitiatedLetters() {
         LocalDateTime now = LocalDateTime.now();
@@ -70,9 +70,9 @@ public class PetInitiatedLetterRetryScheduler {
     }
 
     @Schedules({
-        @Scheduled(cron = "0 10 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 20 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 30 20 * * MON,WED,FRI")
+        @Scheduled(cron = "0 0 21 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 10 21 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 20 21 * * MON,WED,FRI")
     })
     public void retrySendPetInitiatedLetters() {
         LocalDateTime now = LocalDateTime.now();
