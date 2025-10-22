@@ -13,8 +13,6 @@ import com.rainbowletter.server.user.application.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -29,8 +27,9 @@ public class GeneratePetInitiatedLetterEventHandler {
     private final SlackErrorReportService slackErrorReportService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleGeneratePetInitiatedLetters(GeneratePetInitiatedLetterEvent event) {
+        log.info("[이벤트 핸들러 시작] threadId={}, eventSize={}", Thread.currentThread().getId(), event.letterIds().size());
+
         for (Long letterId : event.letterIds()) {
             PetInitiatedLetter letter = petInitiatedLetterJpaRepository.findById(letterId)
                 .orElseThrow(() -> new RainbowLetterException("선편지를 찾을 수 없습니다: " + letterId));
@@ -42,6 +41,15 @@ public class GeneratePetInitiatedLetterEventHandler {
 
                 GeneratedLetterContent generatedLetterContent = petInitiatedLetterGenerator.generate(pet);
                 letter.generate(generatedLetterContent);
+
+                // 각 편지 요청 간 3초 딜레이
+                try {
+                    log.info("[딜레이 시작] petId={}, threadId={}, sleep=3000ms", letter.getPetId(), Thread.currentThread().getId());
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.warn("[딜레이 중단됨] petId={}, threadId={}", letter.getPetId(), Thread.currentThread().getId());
+                }
 
             } catch (Exception e) {
                 letter.markAsFailed();
