@@ -6,6 +6,7 @@ import com.rainbowletter.server.petinitiatedletter.application.port.in.dto.PetIn
 import com.rainbowletter.server.slack.application.domain.service.SlackReviewReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -18,14 +19,17 @@ public class DailyPetInitiatedLetterReportScheduler {
     private final PetInitiatedLetterPersistenceAdapter petInitiatedLetterPersistenceAdapter;
     private final SlackReviewReportService slackReviewReportService;
 
-    @Scheduled(cron = "0 40 20 * * MON,WED,FRI")
+    @Schedules({
+        @Scheduled(cron = "0 40 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 0 21 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 30 21 * * MON,WED,FRI")
+    })
     public void sendDailyPetInitiatedLetterReport() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = now.withHour(19).withMinute(0).withSecond(0);
-        LocalDateTime endDate = now.withHour(20).withMinute(40).withSecond(0);
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
 
         PetInitiatedLetterStats letterStats =
-            petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterReportByCreatedAtBetween(startDate, endDate);
+            petInitiatedLetterPersistenceAdapter.getPetInitiatedLetterReportByCreatedAtBetween(startOfDay, endOfDay);
 
         PetInitiatedLetterReportResponse report = new PetInitiatedLetterReportResponse(
             letterStats.totalLetters(),
