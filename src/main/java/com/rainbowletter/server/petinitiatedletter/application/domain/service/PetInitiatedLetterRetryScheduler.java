@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,12 +38,11 @@ public class PetInitiatedLetterRetryScheduler {
         @Scheduled(cron = "0 15 21 * * MON,WED,FRI")
     })
     public void regeneratePetInitiatedLetters() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
-        LocalDateTime end = now.withHour(20).withMinute(0).withSecond(0);
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
 
         List<PetInitiatedLetter> petInitiatedLetters =
-            petInitiatedLetterJpaRepository.findAllByStatusAndCreatedAtBetween(SCHEDULED, start, end);
+            petInitiatedLetterJpaRepository.findAllByStatusAndCreatedAtBetween(SCHEDULED, startOfDay, endOfDay);
 
         if (petInitiatedLetters.isEmpty()) {
             log.info("AI 생성 재시도할 선편지가 없습니다.");
@@ -75,12 +75,11 @@ public class PetInitiatedLetterRetryScheduler {
         @Scheduled(cron = "0 20 21 * * MON,WED,FRI")
     })
     public void retrySendPetInitiatedLetters() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime start = now.withHour(19).withMinute(29).withSecond(0);
-        LocalDateTime end = now.withHour(20).withMinute(0).withSecond(0);
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
 
         List<PetInitiatedLetter> petInitiatedLetters =
-            petInitiatedLetterJpaRepository.findAllByStatusAndCreatedAtBetween(READY_TO_SEND, start, end);
+            petInitiatedLetterJpaRepository.findAllByStatusAndCreatedAtBetween(READY_TO_SEND, startOfDay, endOfDay);
 
         if (petInitiatedLetters.isEmpty()) {
             log.info("발송 재시도할 선편지가 없습니다.");
