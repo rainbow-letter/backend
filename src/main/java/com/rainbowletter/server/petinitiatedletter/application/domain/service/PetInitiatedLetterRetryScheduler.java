@@ -71,8 +71,8 @@ public class PetInitiatedLetterRetryScheduler {
 
     @Schedules({
         @Scheduled(cron = "0 10 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 20 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 30 20 * * MON,WED,FRI")
+        @Scheduled(cron = "0 50 20 * * MON,WED,FRI"),
+        @Scheduled(cron = "0 20 21 * * MON,WED,FRI")
     })
     public void retrySendPetInitiatedLetters() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
