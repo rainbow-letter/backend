@@ -104,7 +104,7 @@ public class UserPetLetterSettingService {
 
     private void validateNotInRestrictedTime(String email, LocalDateTime now) {
         if (isBlockedTime(now)) {
-            throw new RainbowLetterException("현재 시간에는 선편지 설정 변경이 불가능합니다. (월/수/금 19:30~20:00 제한)", email);
+            throw new RainbowLetterException("현재 시간에는 선편지 설정 변경이 불가능합니다. (월/수/금 19:00~21:00 제한)", email);
         }
     }
 
@@ -113,8 +113,8 @@ public class UserPetLetterSettingService {
         int hour = now.getHour();
         int minute = now.getMinute();
 
-        boolean isBlockedDay = day == DayOfWeek.MONDAY || day == DayOfWeek.WEDNESDAY || day == DayOfWeek.FRIDAY;
-        boolean isBlockedTime = (hour == 19) || (hour == 20 && minute == 0);
+        boolean isBlockedDay = day == DayOfWeek.FRIDAY;
+        boolean isBlockedTime = (hour == 19) || (hour == 21 && minute == 0);
 
         return isBlockedDay && isBlockedTime;
     }
