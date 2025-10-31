@@ -20,9 +20,9 @@ public class DailyPetInitiatedLetterReportScheduler {
     private final SlackReviewReportService slackReviewReportService;
 
     @Schedules({
-        @Scheduled(cron = "0 40 20 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 0 21 * * MON,WED,FRI"),
-        @Scheduled(cron = "0 30 21 * * MON,WED,FRI")
+        @Scheduled(cron = "0 40 20 * * FRI"),
+        @Scheduled(cron = "0 0 21 * * FRI"),
+        @Scheduled(cron = "0 30 21 * * FRI")
     })
     public void sendDailyPetInitiatedLetterReport() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();

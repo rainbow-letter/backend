@@ -21,7 +21,7 @@ public class PetInitiatedLetterSubmitScheduler {
     private final PetInitiatedLetterJpaRepository petInitiatedLetterJpaRepository;
     private final PetInitiatedLetterSubmitter submitter;
 
-    @Scheduled(cron = "0 0 20 * * MON,WED,FRI")
+    @Scheduled(cron = "0 0 20 * * FRI")
     public void submitPetInitiatedLetter() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
